@@ -1,10 +1,12 @@
 package database
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
 	"log"
+	"novafield-api/internal/state"
 	"novafield-api/models"
 	"os"
 	"strings"
@@ -15,64 +17,71 @@ import (
 )
 
 var (
-	db      *FileDB
-	once    sync.Once
-	saveMu  sync.Mutex
+	db              *FileDB
+	once            sync.Once
+	saveMu          sync.Mutex
+	stateRepository state.Repository
+	stateContext    = context.Background()
 )
 
+func ConfigureStateRepository(ctx context.Context, repository state.Repository) {
+	stateContext = ctx
+	stateRepository = repository
+}
+
 type FileDB struct {
-	Mu            sync.RWMutex
-	Users         []models.User           `json:"users"`
-	Gigs          []models.Gig            `json:"gigs"`
-	Packages      []models.Package        `json:"packages"`
-	Orders        []models.Order          `json:"orders"`
-	Reviews       []models.Review         `json:"reviews"`
-	Messages      []models.Message        `json:"messages"`
-	Conversations []models.Conversation   `json:"conversations"`
-	Notifications []models.Notification   `json:"notifications"`
-	Categories    []models.Category       `json:"categories"`
-	Meetings      []models.Meeting        `json:"meetings"`
-	Templates     []models.OfficeTemplate `json:"templates"`
-	Desks              []models.Desk              `json:"desks"`
-	CoworkingSessions  []models.CoworkingSession  `json:"coworkingSessions"`
-	Floors             []models.Floor             `json:"floors"`
-	Disputes           []models.Dispute           `json:"disputes"`
-	DisputeEvidences   []models.DisputeEvidence   `json:"disputeEvidences"`
-	ProjectBriefs      []models.ProjectBrief      `json:"projectBriefs"`
-	MatchResults       []models.MatchResult       `json:"matchResults"`
-	SubscriptionPlans  []models.SubscriptionPlan  `json:"subscriptionPlans"`
-	Subscriptions      []models.Subscription      `json:"subscriptions"`
-	SubDeliverables    []models.SubscriptionDeliverable `json:"subDeliverables"`
-	Invoices           []models.Invoice           `json:"invoices"`
-	BillingInfo        []models.BillingInfo       `json:"billingInfo"`
-	Recommendations    []models.RecommendationScore `json:"recommendations"`
-	UserPreferences    []models.UserPreference    `json:"userPreferences"`
-	RecFeedback        []models.RecommendationFeedback `json:"recFeedback"`
-	Organizations      []models.Organization      `json:"organizations"`
-	OrgMembers         []models.OrgMember         `json:"orgMembers"`
-	OrgInvites         []models.OrgInvite         `json:"orgInvites"`
-	CaseStudies        []models.CaseStudy         `json:"caseStudies"`
-	Testimonials       []models.Testimonial       `json:"testimonials"`
-	Languages          []models.Language          `json:"languages"`
-	Translations       []models.TranslationFile   `json:"translations"`
-	Verifications      []models.Verification      `json:"verifications"`
-	Milestones         []models.Milestone         `json:"milestones"`
-	ClientBriefs       []models.ClientBrief       `json:"clientBriefs"`
-	Proposals          []models.Proposal          `json:"proposals"`
-	Referrals          []models.Referral          `json:"referrals"`
-	ReferralEarnings   []models.ReferralEarning   `json:"referralEarnings"`
-	Assessments        []models.Assessment        `json:"assessments"`
-	AssessmentResults  []models.AssessmentResult  `json:"assessmentResults"`
-	Badges             []models.Badge             `json:"badges"`
-	SavedSearches      []models.SavedSearch       `json:"savedSearches"`
-	QualityScores      []models.QualityScore      `json:"qualityScores"`
-	HelpArticles       []models.HelpArticle       `json:"helpArticles"`
-	SupportTickets     []models.SupportTicket     `json:"supportTickets"`
-	WorkspaceComments  []models.WorkspaceComment  `json:"workspaceComments"`
-	WorkspaceTasks     []models.WorkspaceTask     `json:"workspaceTasks"`
-	NotificationPrefs  []models.NotificationPreference `json:"notificationPrefs"`
-	NotificationDigests []models.NotificationDigest `json:"notificationDigests"`
-	filePath           string
+	Mu                  sync.RWMutex
+	Users               []models.User                    `json:"users"`
+	Gigs                []models.Gig                     `json:"gigs"`
+	Packages            []models.Package                 `json:"packages"`
+	Orders              []models.Order                   `json:"orders"`
+	Reviews             []models.Review                  `json:"reviews"`
+	Messages            []models.Message                 `json:"messages"`
+	Conversations       []models.Conversation            `json:"conversations"`
+	Notifications       []models.Notification            `json:"notifications"`
+	Categories          []models.Category                `json:"categories"`
+	Meetings            []models.Meeting                 `json:"meetings"`
+	Templates           []models.OfficeTemplate          `json:"templates"`
+	Desks               []models.Desk                    `json:"desks"`
+	CoworkingSessions   []models.CoworkingSession        `json:"coworkingSessions"`
+	Floors              []models.Floor                   `json:"floors"`
+	Disputes            []models.Dispute                 `json:"disputes"`
+	DisputeEvidences    []models.DisputeEvidence         `json:"disputeEvidences"`
+	ProjectBriefs       []models.ProjectBrief            `json:"projectBriefs"`
+	MatchResults        []models.MatchResult             `json:"matchResults"`
+	SubscriptionPlans   []models.SubscriptionPlan        `json:"subscriptionPlans"`
+	Subscriptions       []models.Subscription            `json:"subscriptions"`
+	SubDeliverables     []models.SubscriptionDeliverable `json:"subDeliverables"`
+	Invoices            []models.Invoice                 `json:"invoices"`
+	BillingInfo         []models.BillingInfo             `json:"billingInfo"`
+	Recommendations     []models.RecommendationScore     `json:"recommendations"`
+	UserPreferences     []models.UserPreference          `json:"userPreferences"`
+	RecFeedback         []models.RecommendationFeedback  `json:"recFeedback"`
+	Organizations       []models.Organization            `json:"organizations"`
+	OrgMembers          []models.OrgMember               `json:"orgMembers"`
+	OrgInvites          []models.OrgInvite               `json:"orgInvites"`
+	CaseStudies         []models.CaseStudy               `json:"caseStudies"`
+	Testimonials        []models.Testimonial             `json:"testimonials"`
+	Languages           []models.Language                `json:"languages"`
+	Translations        []models.TranslationFile         `json:"translations"`
+	Verifications       []models.Verification            `json:"verifications"`
+	Milestones          []models.Milestone               `json:"milestones"`
+	ClientBriefs        []models.ClientBrief             `json:"clientBriefs"`
+	Proposals           []models.Proposal                `json:"proposals"`
+	Referrals           []models.Referral                `json:"referrals"`
+	ReferralEarnings    []models.ReferralEarning         `json:"referralEarnings"`
+	Assessments         []models.Assessment              `json:"assessments"`
+	AssessmentResults   []models.AssessmentResult        `json:"assessmentResults"`
+	Badges              []models.Badge                   `json:"badges"`
+	SavedSearches       []models.SavedSearch             `json:"savedSearches"`
+	QualityScores       []models.QualityScore            `json:"qualityScores"`
+	HelpArticles        []models.HelpArticle             `json:"helpArticles"`
+	SupportTickets      []models.SupportTicket           `json:"supportTickets"`
+	WorkspaceComments   []models.WorkspaceComment        `json:"workspaceComments"`
+	WorkspaceTasks      []models.WorkspaceTask           `json:"workspaceTasks"`
+	NotificationPrefs   []models.NotificationPreference  `json:"notificationPrefs"`
+	NotificationDigests []models.NotificationDigest      `json:"notificationDigests"`
+	filePath            string
 }
 
 func GetDB() *FileDB {
@@ -84,6 +93,17 @@ func GetDB() *FileDB {
 }
 
 func (d *FileDB) load() {
+	if stateRepository != nil {
+		document, err := stateRepository.Load(stateContext)
+		if err != nil {
+			log.Printf("Error loading PostgreSQL state: %v", err)
+			return
+		}
+		if err := json.Unmarshal(document.Payload, d); err != nil {
+			log.Printf("Error decoding PostgreSQL state: %v", err)
+		}
+		return
+	}
 	data, err := os.ReadFile(d.filePath)
 	if err != nil {
 		log.Println("No existing database, starting fresh")
@@ -106,14 +126,12 @@ func (d *FileDB) Save() {
 		log.Printf("Error marshaling database: %v", err)
 		return
 	}
-	if err := os.WriteFile(d.filePath, data, 0644); err != nil {
-		log.Printf("Error writing database: %v", err)
-	}
+	d.persist(data)
 }
 
 func Init() {
 	GetDB()
-	log.Println("File database initialized")
+	log.Println("Application state initialized")
 }
 
 func SeedIfEmpty() {
@@ -140,7 +158,21 @@ func (d *FileDB) saveLocked() {
 	if err != nil {
 		return
 	}
-	os.WriteFile(d.filePath, data, 0644)
+	d.persist(data)
+}
+
+func (d *FileDB) persist(data []byte) {
+	if stateRepository != nil {
+		if err := stateRepository.Update(stateContext, func(json.RawMessage) (json.RawMessage, error) {
+			return append(json.RawMessage(nil), data...), nil
+		}); err != nil {
+			log.Printf("Error writing PostgreSQL state: %v", err)
+		}
+		return
+	}
+	if err := os.WriteFile(d.filePath, data, 0644); err != nil {
+		log.Printf("Error writing database: %v", err)
+	}
 }
 
 func (d *FileDB) seedCategories() {
@@ -188,9 +220,9 @@ func (d *FileDB) seedUsers() {
 func (d *FileDB) seedGigs() {
 	type gd struct {
 		sellerEmail, title, desc, cat, tools string
-		price                               float64
-		days                                int
-		pkgs                                []models.Package
+		price                                float64
+		days                                 int
+		pkgs                                 []models.Package
 	}
 	gigs := []gd{
 		{"sarah.chen@example.com", "I will create cinematic AI videos with Sora 2", "Professional AI video generation using Sora 2 and Kling 3.0", "ai-video", "Sora 2, Kling 3.0", 150, 3, []models.Package{

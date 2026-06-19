@@ -4,22 +4,82 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
+	"os"
+	"os/signal"
+	"strings"
+	"syscall"
+	"time"
+
 	"novafield-api/database"
 	"novafield-api/handlers"
+	passwordauth "novafield-api/internal/auth"
+	"novafield-api/internal/blob"
+	"novafield-api/internal/config"
+	"novafield-api/internal/favorites"
+	"novafield-api/internal/health"
+	"novafield-api/internal/platform/migrate"
+	"novafield-api/internal/platform/postgres"
+	platformserver "novafield-api/internal/platform/server"
+	"novafield-api/internal/state"
 	"novafield-api/store"
-	"os"
-	"strings"
-	"time"
 )
 
 func main() {
+	cfg, err := config.LoadOS()
+	if err != nil {
+		log.Fatal(err)
+	}
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	var pinger health.Pinger = readyPinger{}
+	if cfg.DatabaseURL != "" {
+		pool, err := postgres.Open(ctx, cfg.DatabaseURL)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer pool.Close()
+		if err := migrate.Apply(ctx, pool); err != nil {
+			log.Fatal(err)
+		}
+		database.ConfigureStateRepository(ctx, state.NewPostgresRepository(pool))
+		store.ConfigureRepositories(passwordauth.NewPostgresSessionRepository(pool), favorites.NewPostgresRepository(pool))
+		pinger = pool
+	}
+	if cfg.S3.Endpoint != "" {
+		objectStore, err := blob.NewS3Store(cfg.S3)
+		if err != nil {
+			log.Fatal(err)
+		}
+		handlers.ConfigureUploadStore(objectStore)
+	}
 	database.Init()
 	database.SeedIfEmpty()
-	maintenanceCtx, stopMaintenance := context.WithCancel(context.Background())
-	defer stopMaintenance()
-	go handlers.StartCoworkingMaintenance(maintenanceCtx, 10*time.Second)
+	go handlers.StartCoworkingMaintenance(ctx, 10*time.Second)
 
+	mux := buildMux()
+	probes := health.New(pinger)
+	probes.Register(mux)
+	probes.MarkStarted()
+	handler := corsMiddleware(loggingMiddleware(mux))
+	httpServer := platformserver.New(":"+cfg.Port, handler)
+	listener, err := net.Listen("tcp", httpServer.Addr)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("NovaField API listening on %s\n", httpServer.Addr)
+	if err := platformserver.Serve(ctx, httpServer, listener, cfg.ShutdownTimeout); err != nil {
+		log.Fatal(err)
+	}
+}
+
+type readyPinger struct{}
+
+func (readyPinger) Ping(context.Context) error { return nil }
+
+func buildMux() *http.ServeMux {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/api/v1/health", handlers.HealthHandler)
@@ -133,18 +193,7 @@ func main() {
 	mux.HandleFunc("/api/v1/admin/support/tickets/", authMiddleware(handlers.AdminUpdateTicketHandler))
 	mux.HandleFunc("/api/v1/admin", authMiddleware(adminRouter))
 	mux.HandleFunc("/api/v1/admin/", authMiddleware(adminActionRouter))
-	handler := corsMiddleware(loggingMiddleware(mux))
-
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "3001"
-	}
-
-	fmt.Printf("╔══════════════════════════════════════════╗\n")
-	fmt.Printf("║  NovaField AI Marketplace API            ║\n")
-	fmt.Printf("║  Running on http://localhost:%s        ║\n", port)
-	fmt.Printf("╚══════════════════════════════════════════╝\n")
-	log.Fatal(http.ListenAndServe(":"+port, handler))
+	return mux
 }
 
 func corsMiddleware(next http.Handler) http.Handler {
