@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import * as Phaser from "phaser";
 import { WORLD_WIDTH, WORLD_HEIGHT, FloorData, RemotePlayerData } from "../config";
 import { Player } from "../entities/Player";
 import { RemotePlayer } from "../entities/RemotePlayer";

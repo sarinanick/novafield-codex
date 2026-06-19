@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import * as Phaser from "phaser";
 
 const EMOTES = ["👋", "👍", "❤️", "😂", "🎉", "🤔", "✅", "🔥"];
 const EMOTE_DURATION = 3000;

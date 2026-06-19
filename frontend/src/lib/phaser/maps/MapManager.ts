@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import * as Phaser from "phaser";
 import { TILE_SIZE, WORLD_WIDTH, WORLD_HEIGHT, ZoneData, DeskData, FloorData, ZONE_COLORS } from "../config";
 
 const DEFAULT_ZONES: ZoneData[] = [
