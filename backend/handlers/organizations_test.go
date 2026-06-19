@@ -193,7 +193,10 @@ func TestRemoveMember(t *testing.T) {
 	}
 	d.Mu.Unlock()
 
-	ownerToken := store.GenerateToken(owner.ID, owner.Email, owner.Role)
+	ownerToken, err := store.GenerateToken(owner.ID, owner.Email, owner.Role)
+	if err != nil {
+		t.Fatalf("generate token: %v", err)
+	}
 
 	req := authRequest("DELETE", "/api/v1/organizations/"+orgID+"/members/"+member.ID, nil, ownerToken)
 	rr := newRecorder()
@@ -242,7 +245,10 @@ func TestChangeMemberRole(t *testing.T) {
 	})
 	d.Mu.Unlock()
 
-	ownerToken := store.GenerateToken(owner.ID, owner.Email, owner.Role)
+	ownerToken, err := store.GenerateToken(owner.ID, owner.Email, owner.Role)
+	if err != nil {
+		t.Fatalf("generate token: %v", err)
+	}
 
 	body := jsonBody(map[string]interface{}{"role": "manager"})
 	req := authRequest("PUT", "/api/v1/organizations/"+orgID+"/members/"+member.ID+"/role", body, ownerToken)
@@ -366,7 +372,7 @@ func createTestOrg(ownerID string) string {
 	d := database.GetDB()
 	d.Mu.Lock()
 	d.Organizations = append(d.Organizations, models.Organization{
-		ID: orgID, Name: "Test Org", Slug: "test-org-"+orgID[:8],
+		ID: orgID, Name: "Test Org", Slug: "test-org-" + orgID[:8],
 		OwnerID: ownerID, MemberCount: 1, CreatedAt: store.Now(),
 	})
 	d.OrgMembers = append(d.OrgMembers, models.OrgMember{

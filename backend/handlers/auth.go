@@ -51,7 +51,11 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	d.Mu.Unlock()
 	d.Save()
 
-	token := store.GenerateToken(user.ID, user.Email, user.Role)
+	token, err := store.GenerateToken(user.ID, user.Email, user.Role)
+	if err != nil {
+		Error(w, 500, "Failed to create session")
+		return
+	}
 	pub := store.ToPublic(user)
 	JSON(w, 201, H{"token": token, "user": pub})
 }
@@ -73,7 +77,11 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := store.GenerateToken(user.ID, user.Email, user.Role)
+	token, err := store.GenerateToken(user.ID, user.Email, user.Role)
+	if err != nil {
+		Error(w, 500, "Failed to create session")
+		return
+	}
 	pub := store.ToPublic(*user)
 	JSON(w, 200, H{"token": token, "user": pub})
 }

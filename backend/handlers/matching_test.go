@@ -79,8 +79,8 @@ func TestMatchFreelancers_RankedByScore(t *testing.T) {
 	_, token := createTestUser("client")
 
 	body := jsonBody(map[string]interface{}{
-		"title":    "Need Sora expert",
-		"skills":   []string{"Sora 2"},
+		"title":     "Need Sora expert",
+		"skills":    []string{"Sora 2"},
 		"budgetMin": 50,
 		"budgetMax": 200,
 	})
@@ -192,7 +192,10 @@ func TestGetMatchProjects_AsFreelancer(t *testing.T) {
 	rr := newRecorder()
 	MatchFreelancersHandler(rr, req)
 
-	token := store.GenerateToken(freelancer.ID, freelancer.Email, freelancer.Role)
+	token, err := store.GenerateToken(freelancer.ID, freelancer.Email, freelancer.Role)
+	if err != nil {
+		t.Fatalf("generate token: %v", err)
+	}
 
 	projReq := authRequest("GET", "/api/v1/match/projects", nil, token)
 	projRR := newRecorder()

@@ -1,39 +1,34 @@
 package models
 
-import (
-	"sync"
-	"time"
-)
-
 type User struct {
-	ID           string   `json:"id"`
-	Email        string   `json:"email"`
-	PasswordHash string   `json:"-"`
-	Name         string   `json:"name"`
-	Role         string   `json:"role"`
-	Avatar       string   `json:"avatar"`
-	Bio          string   `json:"bio"`
-	Skills       []string `json:"skills"`
-	HourlyRate   float64  `json:"hourlyRate"`
-	Rating       float64  `json:"rating"`
-	ReviewsCount int      `json:"reviewsCount"`
-	Earnings     float64  `json:"earnings"`
-	Spent        float64  `json:"spent"`
-	Location     string   `json:"location"`
-	Website      string   `json:"website"`
-	Language     string   `json:"language"`
-	JoinedAt     string   `json:"joinedAt"`
-	IsVerified           bool     `json:"isVerified"`
-	IsOnline             bool     `json:"isOnline"`
-	SpotifyAccessToken   string   `json:"-"`
-	SpotifyRefreshToken  string   `json:"-"`
-	SpotifyTokenExpiry   int64    `json:"-"`
-	SpotifyConnected     bool     `json:"spotifyConnected"`
-	SpotifySharing       bool     `json:"spotifySharing"`
-	SpotifyTrackName     string   `json:"spotifyTrackName,omitempty"`
-	SpotifyTrackArtist   string   `json:"spotifyTrackArtist,omitempty"`
-	SpotifyAlbumArt      string   `json:"spotifyAlbumArt,omitempty"`
-	SpotifyTrackURL      string   `json:"spotifyTrackUrl,omitempty"`
+	ID                  string   `json:"id"`
+	Email               string   `json:"email"`
+	PasswordHash        string   `json:"-"`
+	Name                string   `json:"name"`
+	Role                string   `json:"role"`
+	Avatar              string   `json:"avatar"`
+	Bio                 string   `json:"bio"`
+	Skills              []string `json:"skills"`
+	HourlyRate          float64  `json:"hourlyRate"`
+	Rating              float64  `json:"rating"`
+	ReviewsCount        int      `json:"reviewsCount"`
+	Earnings            float64  `json:"earnings"`
+	Spent               float64  `json:"spent"`
+	Location            string   `json:"location"`
+	Website             string   `json:"website"`
+	Language            string   `json:"language"`
+	JoinedAt            string   `json:"joinedAt"`
+	IsVerified          bool     `json:"isVerified"`
+	IsOnline            bool     `json:"isOnline"`
+	SpotifyAccessToken  string   `json:"-"`
+	SpotifyRefreshToken string   `json:"-"`
+	SpotifyTokenExpiry  int64    `json:"-"`
+	SpotifyConnected    bool     `json:"spotifyConnected"`
+	SpotifySharing      bool     `json:"spotifySharing"`
+	SpotifyTrackName    string   `json:"spotifyTrackName,omitempty"`
+	SpotifyTrackArtist  string   `json:"spotifyTrackArtist,omitempty"`
+	SpotifyAlbumArt     string   `json:"spotifyAlbumArt,omitempty"`
+	SpotifyTrackURL     string   `json:"spotifyTrackUrl,omitempty"`
 }
 
 type UserPublic struct {
@@ -52,30 +47,30 @@ type UserPublic struct {
 }
 
 type Gig struct {
-	ID           string       `json:"id"`
-	FreelancerID string       `json:"freelancerId"`
-	Freelancer   *UserPublic  `json:"freelancer,omitempty"`
-	Title        string       `json:"title"`
-	Description  string       `json:"description"`
-	Category     string       `json:"category"`
-	Subcategory  string       `json:"subcategory"`
-	Tags         []string     `json:"tags"`
-	AITools      []string     `json:"aiTools"`
-	PriceType    string       `json:"priceType"`
-	Price        float64      `json:"price"`
-	DeliveryDays int          `json:"deliveryDays"`
-	Revisions    int          `json:"revisions"`
-	Images       []string     `json:"images"`
-	VideoURL     string       `json:"videoUrl"`
-	Status       string       `json:"status"`
-	OrdersCount  int          `json:"ordersCount"`
-	Views        int          `json:"views"`
-	Featured     bool         `json:"featured"`
-	Rating       float64      `json:"rating"`
-	ReviewsCount int          `json:"reviewsCount"`
-	CreatedAt    string       `json:"createdAt"`
-	UpdatedAt    string       `json:"updatedAt"`
-	Packages     []Package    `json:"packages,omitempty"`
+	ID           string      `json:"id"`
+	FreelancerID string      `json:"freelancerId"`
+	Freelancer   *UserPublic `json:"freelancer,omitempty"`
+	Title        string      `json:"title"`
+	Description  string      `json:"description"`
+	Category     string      `json:"category"`
+	Subcategory  string      `json:"subcategory"`
+	Tags         []string    `json:"tags"`
+	AITools      []string    `json:"aiTools"`
+	PriceType    string      `json:"priceType"`
+	Price        float64     `json:"price"`
+	DeliveryDays int         `json:"deliveryDays"`
+	Revisions    int         `json:"revisions"`
+	Images       []string    `json:"images"`
+	VideoURL     string      `json:"videoUrl"`
+	Status       string      `json:"status"`
+	OrdersCount  int         `json:"ordersCount"`
+	Views        int         `json:"views"`
+	Featured     bool        `json:"featured"`
+	Rating       float64     `json:"rating"`
+	ReviewsCount int         `json:"reviewsCount"`
+	CreatedAt    string      `json:"createdAt"`
+	UpdatedAt    string      `json:"updatedAt"`
+	Packages     []Package   `json:"packages,omitempty"`
 }
 
 type Package struct {
@@ -209,11 +204,6 @@ type Meeting struct {
 	CreatedAt      string      `json:"createdAt"`
 }
 
-type TokenEntry struct {
-	UserID    string
-	ExpiresAt time.Time
-}
-
 type Floor struct {
 	ID        string  `json:"id"`
 	Name      string  `json:"name"`
@@ -241,7 +231,7 @@ type OfficeTemplate struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	Size        string `json:"size"` // small, medium, large
+	Size        string `json:"size"`   // small, medium, large
 	Layout      string `json:"layout"` // open, private, hybrid
 	Zones       []Zone `json:"zones"`
 	Thumbnail   string `json:"thumbnail"`
@@ -261,57 +251,51 @@ type DeskObject struct {
 }
 
 type Desk struct {
-	ID        string      `json:"id"`
-	ZoneID    string      `json:"zoneId"`
-	Position  Position    `json:"position"`
-	OwnerID   string      `json:"ownerId,omitempty"`
-	Owner     *UserPublic `json:"owner,omitempty" gorm:"-"`
-	IsLocked  bool        `json:"isLocked"`
+	ID        string       `json:"id"`
+	ZoneID    string       `json:"zoneId"`
+	Position  Position     `json:"position"`
+	OwnerID   string       `json:"ownerId,omitempty"`
+	Owner     *UserPublic  `json:"owner,omitempty" gorm:"-"`
+	IsLocked  bool         `json:"isLocked"`
 	Objects   []DeskObject `json:"objects"`
-	Color     string      `json:"color"`
-	CreatedAt string      `json:"createdAt"`
+	Color     string       `json:"color"`
+	CreatedAt string       `json:"createdAt"`
 }
 
 type CoworkingSession struct {
-	ID              string       `json:"id"`
-	HostID          string       `json:"hostId"`
-	Host            *UserPublic  `json:"host,omitempty" gorm:"-"`
-	Type            string       `json:"type"` // focused, pomodoro, casual
-	Title           string       `json:"title"`
-	ZoneID          string       `json:"zoneId"`
-	StartTime       string       `json:"startTime"`
-	Duration        int          `json:"duration"` // minutes
-	ParticipantIDs  []string     `json:"participantIds"`
-	MaxParticipants int          `json:"maxParticipants"`
-	Status          string       `json:"status"` // active, completed, cancelled
-	TimerState      *TimerState  `json:"timerState,omitempty"`
-	CreatedAt       string       `json:"createdAt"`
+	ID              string      `json:"id"`
+	HostID          string      `json:"hostId"`
+	Host            *UserPublic `json:"host,omitempty" gorm:"-"`
+	Type            string      `json:"type"` // focused, pomodoro, casual
+	Title           string      `json:"title"`
+	ZoneID          string      `json:"zoneId"`
+	StartTime       string      `json:"startTime"`
+	Duration        int         `json:"duration"` // minutes
+	ParticipantIDs  []string    `json:"participantIds"`
+	MaxParticipants int         `json:"maxParticipants"`
+	Status          string      `json:"status"` // active, completed, cancelled
+	TimerState      *TimerState `json:"timerState,omitempty"`
+	CreatedAt       string      `json:"createdAt"`
 }
 
 type TimerState struct {
-	Remaining    int    `json:"remaining"` // seconds
-	IsPaused     bool   `json:"isPaused"`
-	Phase        string `json:"phase"` // work, break (for pomodoro)
-	LastResumed  string `json:"lastResumed,omitempty"`
-}
-
-type DB struct {
-	Mu        sync.RWMutex
-	Favorites map[string]map[string]bool // userID -> gigID -> true
-	Tokens    map[string]TokenEntry      // token -> TokenEntry
+	Remaining   int    `json:"remaining"` // seconds
+	IsPaused    bool   `json:"isPaused"`
+	Phase       string `json:"phase"` // work, break (for pomodoro)
+	LastResumed string `json:"lastResumed,omitempty"`
 }
 
 type Dispute struct {
-	ID          string       `json:"id"`
-	OrderID     string       `json:"orderId"`
-	OpenedBy    string       `json:"openedBy"`
-	OpenedRole  string       `json:"openedRole"` // "client" or "freelancer"
-	Reason      string       `json:"reason"`     // "quality", "scope", "communication", "deadline", "other"
-	Description string       `json:"description"`
-	Status      string       `json:"status"` // "open", "evidence_pending", "under_review", "resolved", "escalated"
-	Resolution  *Resolution  `json:"resolution,omitempty"`
-	CreatedAt   string       `json:"createdAt"`
-	ResolvedAt  string       `json:"resolvedAt,omitempty"`
+	ID          string      `json:"id"`
+	OrderID     string      `json:"orderId"`
+	OpenedBy    string      `json:"openedBy"`
+	OpenedRole  string      `json:"openedRole"` // "client" or "freelancer"
+	Reason      string      `json:"reason"`     // "quality", "scope", "communication", "deadline", "other"
+	Description string      `json:"description"`
+	Status      string      `json:"status"` // "open", "evidence_pending", "under_review", "resolved", "escalated"
+	Resolution  *Resolution `json:"resolution,omitempty"`
+	CreatedAt   string      `json:"createdAt"`
+	ResolvedAt  string      `json:"resolvedAt,omitempty"`
 }
 
 type DisputeEvidence struct {
@@ -324,24 +308,24 @@ type DisputeEvidence struct {
 }
 
 type Resolution struct {
-	Ruling      string  `json:"ruling"`       // "full_refund", "full_release", "split"
-	SplitClient float64 `json:"splitClient"`  // percentage to client (0-100)
+	Ruling      string  `json:"ruling"`      // "full_refund", "full_release", "split"
+	SplitClient float64 `json:"splitClient"` // percentage to client (0-100)
 	AdminNote   string  `json:"adminNote"`
 	ResolvedBy  string  `json:"resolvedBy"`
 }
 
 type ProjectBrief struct {
-	ID           string   `json:"id"`
-	ClientID     string   `json:"clientId"`
-	Title        string   `json:"title"`
-	Description  string   `json:"description"`
-	Category     string   `json:"category"`
-	Skills       []string `json:"skills"`
-	BudgetMin    float64  `json:"budgetMin"`
-	BudgetMax    float64  `json:"budgetMax"`
-	Timeline     string   `json:"timeline"` // "urgent", "1_week", "1_month", "flexible"
-	Status       string   `json:"status"`   // "active", "matched", "expired"
-	CreatedAt    string   `json:"createdAt"`
+	ID          string   `json:"id"`
+	ClientID    string   `json:"clientId"`
+	Title       string   `json:"title"`
+	Description string   `json:"description"`
+	Category    string   `json:"category"`
+	Skills      []string `json:"skills"`
+	BudgetMin   float64  `json:"budgetMin"`
+	BudgetMax   float64  `json:"budgetMax"`
+	Timeline    string   `json:"timeline"` // "urgent", "1_week", "1_month", "flexible"
+	Status      string   `json:"status"`   // "active", "matched", "expired"
+	CreatedAt   string   `json:"createdAt"`
 }
 
 type MatchResult struct {
@@ -362,29 +346,29 @@ type MatchReason struct {
 }
 
 type SubscriptionPlan struct {
-	ID           string   `json:"id"`
-	GigID        string   `json:"gigId"`
-	Name         string   `json:"name"`
-	Interval     string   `json:"interval"` // "monthly", "quarterly"
-	Price        float64  `json:"price"`
-	Deliverables string   `json:"deliverables"`
-	MaxRevisions int      `json:"maxRevisions"`
-	IsActive     bool     `json:"isActive"`
-	CreatedAt    string   `json:"createdAt"`
+	ID           string  `json:"id"`
+	GigID        string  `json:"gigId"`
+	Name         string  `json:"name"`
+	Interval     string  `json:"interval"` // "monthly", "quarterly"
+	Price        float64 `json:"price"`
+	Deliverables string  `json:"deliverables"`
+	MaxRevisions int     `json:"maxRevisions"`
+	IsActive     bool    `json:"isActive"`
+	CreatedAt    string  `json:"createdAt"`
 }
 
 type Subscription struct {
-	ID                 string `json:"id"`
-	PlanID             string `json:"planId"`
-	ClientID           string `json:"clientId"`
-	FreelancerID       string `json:"freelancerId"`
-	Status             string `json:"status"` // "active", "paused", "cancelled", "expired"
-	CurrentPeriodStart string `json:"currentPeriodStart"`
-	CurrentPeriodEnd   string `json:"currentPeriodEnd"`
-	NextBillingDate    string `json:"nextBillingDate"`
+	ID                 string  `json:"id"`
+	PlanID             string  `json:"planId"`
+	ClientID           string  `json:"clientId"`
+	FreelancerID       string  `json:"freelancerId"`
+	Status             string  `json:"status"` // "active", "paused", "cancelled", "expired"
+	CurrentPeriodStart string  `json:"currentPeriodStart"`
+	CurrentPeriodEnd   string  `json:"currentPeriodEnd"`
+	NextBillingDate    string  `json:"nextBillingDate"`
 	TotalPaid          float64 `json:"totalPaid"`
-	CreatedAt          string `json:"createdAt"`
-	CancelledAt        string `json:"cancelledAt,omitempty"`
+	CreatedAt          string  `json:"createdAt"`
+	CancelledAt        string  `json:"cancelledAt,omitempty"`
 }
 
 type SubscriptionDeliverable struct {
@@ -399,7 +383,7 @@ type SubscriptionDeliverable struct {
 type GigGenerationRequest struct {
 	ServiceType    string   `json:"serviceType"`
 	Skills         []string `json:"skills"`
-	Experience     string   `json:"experience"`     // "beginner", "intermediate", "expert"
+	Experience     string   `json:"experience"` // "beginner", "intermediate", "expert"
 	TargetAudience string   `json:"targetAudience"`
 	Tone           string   `json:"tone"` // "professional", "casual", "technical"
 	PriceMin       float64  `json:"priceMin"`
@@ -422,12 +406,12 @@ type FAQEntry struct {
 }
 
 type PackageSuggestion struct {
-	Tier         string `json:"tier"`
-	Name         string `json:"name"`
-	Description  string `json:"description"`
+	Tier         string  `json:"tier"`
+	Name         string  `json:"name"`
+	Description  string  `json:"description"`
 	Price        float64 `json:"price"`
-	DeliveryDays int    `json:"deliveryDays"`
-	Revisions    int    `json:"revisions"`
+	DeliveryDays int     `json:"deliveryDays"`
+	Revisions    int     `json:"revisions"`
 }
 
 type Invoice struct {
@@ -566,14 +550,14 @@ type FinancialSummary struct {
 }
 
 type Verification struct {
-	ID        string `json:"id"`
-	UserID    string `json:"userId"`
-	Type      string `json:"type"` // "email", "phone", "identity"
-	Status    string `json:"status"` // "pending", "verified", "rejected"
-	Code      string `json:"code,omitempty"`
-	DocURL    string `json:"docUrl,omitempty"`
+	ID         string `json:"id"`
+	UserID     string `json:"userId"`
+	Type       string `json:"type"`   // "email", "phone", "identity"
+	Status     string `json:"status"` // "pending", "verified", "rejected"
+	Code       string `json:"code,omitempty"`
+	DocURL     string `json:"docUrl,omitempty"`
 	ReviewedBy string `json:"reviewedBy,omitempty"`
-	CreatedAt string `json:"createdAt"`
+	CreatedAt  string `json:"createdAt"`
 	VerifiedAt string `json:"verifiedAt,omitempty"`
 }
 
@@ -647,13 +631,13 @@ type ReferralEarning struct {
 }
 
 type Assessment struct {
-	ID          string             `json:"id"`
-	Category    string             `json:"category"`
-	Title       string             `json:"title"`
-	Description string             `json:"description"`
+	ID          string               `json:"id"`
+	Category    string               `json:"category"`
+	Title       string               `json:"title"`
+	Description string               `json:"description"`
 	Questions   []AssessmentQuestion `json:"questions"`
-	PassScore   int                `json:"passScore"`
-	CreatedAt   string             `json:"createdAt"`
+	PassScore   int                  `json:"passScore"`
+	CreatedAt   string               `json:"createdAt"`
 }
 
 type AssessmentQuestion struct {
@@ -717,13 +701,13 @@ type HelpArticle struct {
 }
 
 type SupportTicket struct {
-	ID        string       `json:"id"`
-	UserID    string       `json:"userId"`
-	Subject   string       `json:"subject"`
-	Category  string       `json:"category"`
-	Priority  string       `json:"priority"` // "low", "medium", "high", "urgent"
-	Status    string       `json:"status"`   // "open", "in_progress", "resolved", "closed"
-	CreatedAt string       `json:"createdAt"`
+	ID        string        `json:"id"`
+	UserID    string        `json:"userId"`
+	Subject   string        `json:"subject"`
+	Category  string        `json:"category"`
+	Priority  string        `json:"priority"` // "low", "medium", "high", "urgent"
+	Status    string        `json:"status"`   // "open", "in_progress", "resolved", "closed"
+	CreatedAt string        `json:"createdAt"`
 	Replies   []TicketReply `json:"replies,omitempty"`
 }
 
@@ -756,21 +740,21 @@ type WorkspaceTask struct {
 }
 
 type NotificationPreference struct {
-	UserID       string `json:"userId"`
-	EmailOrders  bool   `json:"emailOrders"`
-	EmailMessages bool  `json:"emailMessages"`
-	EmailMarketing bool `json:"emailMarketing"`
-	InAppOrders  bool   `json:"inAppOrders"`
-	InAppMessages bool  `json:"inAppMessages"`
+	UserID          string `json:"userId"`
+	EmailOrders     bool   `json:"emailOrders"`
+	EmailMessages   bool   `json:"emailMessages"`
+	EmailMarketing  bool   `json:"emailMarketing"`
+	InAppOrders     bool   `json:"inAppOrders"`
+	InAppMessages   bool   `json:"inAppMessages"`
 	QuietHoursStart string `json:"quietHoursStart"` // "22:00"
 	QuietHoursEnd   string `json:"quietHoursEnd"`   // "08:00"
 	DigestFrequency string `json:"digestFrequency"` // "daily", "weekly", "none"
 }
 
 type NotificationDigest struct {
-	ID        string `json:"id"`
-	UserID    string `json:"userId"`
-	Type      string `json:"type"` // "daily", "weekly"`
-	Content   string `json:"content"`
-	SentAt    string `json:"sentAt"`
+	ID      string `json:"id"`
+	UserID  string `json:"userId"`
+	Type    string `json:"type"` // "daily", "weekly"`
+	Content string `json:"content"`
+	SentAt  string `json:"sentAt"`
 }

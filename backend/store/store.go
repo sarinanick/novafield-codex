@@ -1,32 +1,34 @@
 package store
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
 	"math"
-	"novafield-api/database"
-	passwordauth "novafield-api/internal/auth"
-	"novafield-api/models"
 	"sort"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
+
+	"novafield-api/database"
+	passwordauth "novafield-api/internal/auth"
+	"novafield-api/internal/favorites"
+	"novafield-api/models"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-var tokenMu sync.RWMutex
-
-var DB = &models.DB{
-	Favorites: make(map[string]map[string]bool),
-	Tokens:    make(map[string]models.TokenEntry),
-}
-
 var tokenExpiry = 72 * time.Hour
 
 var productionPasswordHasher = passwordauth.NewBcryptHasher(bcrypt.DefaultCost)
+var sessionRepository passwordauth.SessionRepository = passwordauth.NewMemorySessionRepository(time.Now)
+var favoriteRepository favorites.Repository = favorites.NewMemoryRepository()
+
+func ConfigureRepositories(sessions passwordauth.SessionRepository, favoriteStore favorites.Repository) {
+	sessionRepository = sessions
+	favoriteRepository = favoriteStore
+}
 
 func NewID() string {
 	b := make([]byte, 16)
@@ -50,39 +52,29 @@ func Now() string {
 	return time.Now().UTC().Format(time.RFC3339)
 }
 
-func GenerateToken(userID, email, role string) string {
-	token := NewID()
-	tokenMu.Lock()
-	DB.Tokens[token] = models.TokenEntry{
-		UserID:    userID,
-		ExpiresAt: time.Now().Add(tokenExpiry),
-	}
-	tokenMu.Unlock()
-	return token
+func GenerateToken(userID, email, role string) (string, error) {
+	return sessionRepository.Create(context.Background(), userID, time.Now().Add(tokenExpiry))
 }
 
 func GetUserByToken(token string) *models.User {
-	tokenMu.RLock()
-	entry, ok := DB.Tokens[token]
-	tokenMu.RUnlock()
-	if !ok || time.Now().After(entry.ExpiresAt) {
-		if ok {
-			tokenMu.Lock()
-			delete(DB.Tokens, token)
-			tokenMu.Unlock()
-		}
+	userID, err := sessionRepository.UserID(context.Background(), token)
+	if err != nil {
 		return nil
 	}
 	d := database.GetDB()
 	d.Mu.RLock()
 	defer d.Mu.RUnlock()
 	for i := range d.Users {
-		if d.Users[i].ID == entry.UserID {
+		if d.Users[i].ID == userID {
 			u := d.Users[i]
 			return &u
 		}
 	}
 	return nil
+}
+
+func ToggleFavorite(ctx context.Context, userID, gigID string) (bool, error) {
+	return favoriteRepository.Toggle(ctx, userID, gigID)
 }
 
 func ToPublic(u models.User) models.UserPublic {

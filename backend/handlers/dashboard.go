@@ -173,20 +173,12 @@ func ToggleFavoriteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	gigID := strings.TrimPrefix(r.URL.Path, "/api/v1/favorites/")
 
-	store.DB.Mu.Lock()
-	defer store.DB.Mu.Unlock()
-
-	if store.DB.Favorites[user.ID] == nil {
-		store.DB.Favorites[user.ID] = make(map[string]bool)
-	}
-
-	if store.DB.Favorites[user.ID][gigID] {
-		delete(store.DB.Favorites[user.ID], gigID)
-		JSON(w, 200, H{"favorited": false})
+	favorited, err := store.ToggleFavorite(r.Context(), user.ID, gigID)
+	if err != nil {
+		Error(w, 500, "Failed to update favorite")
 		return
 	}
-	store.DB.Favorites[user.ID][gigID] = true
-	JSON(w, 200, H{"favorited": true})
+	JSON(w, 200, H{"favorited": favorited})
 }
 
 func GetEarningsHandler(w http.ResponseWriter, r *http.Request) {

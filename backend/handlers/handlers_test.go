@@ -7,8 +7,10 @@ import (
 	"net/http/httptest"
 	"novafield-api/database"
 	passwordauth "novafield-api/internal/auth"
+	"novafield-api/internal/favorites"
 	"novafield-api/models"
 	"novafield-api/store"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -68,10 +70,10 @@ func resetDB() {
 	d.NotificationDigests = nil
 	d.Mu.Unlock()
 
-	store.DB.Mu.Lock()
-	store.DB.Favorites = make(map[string]map[string]bool)
-	store.DB.Tokens = make(map[string]models.TokenEntry)
-	store.DB.Mu.Unlock()
+	store.ConfigureRepositories(
+		passwordauth.NewMemorySessionRepository(time.Now),
+		favorites.NewMemoryRepository(),
+	)
 }
 
 func createTestUser(role string) (*models.User, string) {
@@ -94,7 +96,10 @@ func createTestUser(role string) (*models.User, string) {
 	d.Users = append(d.Users, user)
 	d.Mu.Unlock()
 
-	token := store.GenerateToken(user.ID, user.Email, user.Role)
+	token, err := store.GenerateToken(user.ID, user.Email, user.Role)
+	if err != nil {
+		panic(err)
+	}
 	return &user, token
 }
 
