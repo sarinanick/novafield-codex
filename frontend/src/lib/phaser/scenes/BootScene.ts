@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import * as Phaser from "phaser";
 import { TILE_SIZE } from "../config";
 
 export class BootScene extends Phaser.Scene {

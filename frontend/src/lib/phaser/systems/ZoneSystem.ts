@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import * as Phaser from "phaser";
 import { ZoneData, ZONE_COLORS, TILE_SIZE } from "../config";
 
 export class ZoneSystem {
