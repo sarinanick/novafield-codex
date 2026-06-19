@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"novafield-api/database"
@@ -59,15 +60,15 @@ func CreateCoworkingSession(w http.ResponseWriter, r *http.Request) {
 	}
 
 	session := models.CoworkingSession{
-		ID:             store.NewID(),
-		HostID:         user.ID,
-		Type:           req.Type,
-		Title:          req.Title,
-		ZoneID:         req.ZoneID,
-		StartTime:      store.Now(),
-		Duration:       req.Duration,
-		ParticipantIDs: []string{},
-		Status:         "active",
+		ID:              store.NewID(),
+		HostID:          user.ID,
+		Type:            req.Type,
+		Title:           req.Title,
+		ZoneID:          req.ZoneID,
+		StartTime:       store.Now(),
+		Duration:        req.Duration,
+		ParticipantIDs:  []string{},
+		Status:          "active",
 		MaxParticipants: maxCoworkingParticipants,
 		TimerState: &models.TimerState{
 			Remaining: totalSeconds,
@@ -437,13 +438,20 @@ func extractCoworkingID(path, suffix string) string {
 	return trimmed
 }
 
-func init() {
-	go func() {
-		ticker := time.NewTicker(10 * time.Second)
-		defer ticker.Stop()
-		for range ticker.C {
-			SyncCoworkingTimers()
-			ExpireStaleCoworkingSessions()
+func StartCoworkingMaintenance(ctx context.Context, interval time.Duration) {
+	runCoworkingMaintenance(ctx, interval, SyncCoworkingTimers, ExpireStaleCoworkingSessions)
+}
+
+func runCoworkingMaintenance(ctx context.Context, interval time.Duration, syncTimers, expireSessions func()) {
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+			syncTimers()
+			expireSessions()
 		}
-	}()
+	}
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,11 +10,15 @@ import (
 	"novafield-api/store"
 	"os"
 	"strings"
+	"time"
 )
 
 func main() {
 	database.Init()
 	database.SeedIfEmpty()
+	maintenanceCtx, stopMaintenance := context.WithCancel(context.Background())
+	defer stopMaintenance()
+	go handlers.StartCoworkingMaintenance(maintenanceCtx, 10*time.Second)
 
 	mux := http.NewServeMux()
 
@@ -146,8 +151,8 @@ func main() {
 
 func corsMiddleware(next http.Handler) http.Handler {
 	origins := map[string]bool{
-		"http://localhost:3000":  true,
-		"http://localhost:3001":  true,
+		"http://localhost:3000": true,
+		"http://localhost:3001": true,
 		"http://127.0.0.1:3000": true,
 		"http://127.0.0.1:3001": true,
 	}

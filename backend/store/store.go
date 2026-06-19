@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math"
 	"novafield-api/database"
+	passwordauth "novafield-api/internal/auth"
 	"novafield-api/models"
 	"sort"
 	"strconv"
@@ -25,6 +26,8 @@ var DB = &models.DB{
 
 var tokenExpiry = 72 * time.Hour
 
+var productionPasswordHasher = passwordauth.NewBcryptHasher(bcrypt.DefaultCost)
+
 func NewID() string {
 	b := make([]byte, 16)
 	rand.Read(b)
@@ -32,15 +35,15 @@ func NewID() string {
 }
 
 func HashPassword(p string) string {
-	hash, err := bcrypt.GenerateFromPassword([]byte(p), bcrypt.DefaultCost)
+	hash, err := productionPasswordHasher.Hash(p)
 	if err != nil {
 		panic(fmt.Sprintf("bcrypt: %v", err))
 	}
-	return string(hash)
+	return hash
 }
 
 func CheckPassword(hash, p string) bool {
-	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(p)) == nil
+	return productionPasswordHasher.Compare(hash, p)
 }
 
 func Now() string {

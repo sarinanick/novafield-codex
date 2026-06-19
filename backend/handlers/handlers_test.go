@@ -6,9 +6,14 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"novafield-api/database"
+	passwordauth "novafield-api/internal/auth"
 	"novafield-api/models"
 	"novafield-api/store"
+
+	"golang.org/x/crypto/bcrypt"
 )
+
+var testPasswordHasher = passwordauth.NewBcryptHasher(bcrypt.MinCost)
 
 func resetDB() {
 	d := database.GetDB()
@@ -70,10 +75,14 @@ func resetDB() {
 }
 
 func createTestUser(role string) (*models.User, string) {
+	passwordHash, err := testPasswordHasher.Hash("password123")
+	if err != nil {
+		panic(err)
+	}
 	user := models.User{
 		ID:           store.NewID(),
 		Email:        store.NewID()[:8] + "@test.com",
-		PasswordHash: store.HashPassword("password123"),
+		PasswordHash: passwordHash,
 		Name:         "Test " + role,
 		Role:         role,
 		Skills:       []string{},
