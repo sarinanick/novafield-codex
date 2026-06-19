@@ -1,0 +1,6 @@
+.git
+.env*
+novafield.json
+uploads
+*.log
+coverage*
