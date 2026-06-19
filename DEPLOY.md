@@ -1,4 +1,4 @@
-# NovaField AI — Deployment Guide (Dokploy + Darakub)
+# NovaField AI — Deployment Guide (Hamravesh image-based)
 
 ## Table of Contents
 
@@ -12,7 +12,7 @@
 8. [Environment Variables](#environment-variables)
 9. [Domain & Reverse Proxy](#domain--reverse-proxy)
 10. [Persistent Storage](#persistent-storage)
-11. [GitLab CI/CD Integration](#gitlab-cicd-integration)
+11. [GitHub Actions image publishing](#github-actions-image-publishing)
 12. [SSL/TLS Setup](#ssltls-setup)
 13. [Monitoring & Health Checks](#monitoring--health-checks)
 14. [Troubleshooting](#troubleshooting)
@@ -25,7 +25,7 @@
 NovaField AI is a full-stack AI freelancer marketplace with:
 - **Backend**: Go 1.25 API server (pure `net/http`, no framework)
 - **Frontend**: Next.js 15 with React 19, Tailwind CSS, Phaser 3 (virtual coworking)
-- **Database**: File-based JSON store (`novafield.json`)
+- **Database**: PostgreSQL on Hamravesh
 - **Real-time**: WebSocket (gorilla/websocket) for messaging + virtual world
 
 ## Architecture
@@ -62,7 +62,7 @@ NovaField AI is a full-stack AI freelancer marketplace with:
 
 - A VPS with Docker installed (Ubuntu 22.04+ recommended, 2+ CPU, 4GB+ RAM)
 - A domain name pointed to your server's IP
-- GitLab repository access at `hamgit.ir/alitabaei7/novafield`
+- GitHub repository access to `sarinanick/novafield-codex`
 
 ## Dokploy Installation
 
@@ -418,38 +418,23 @@ services:
 
 ---
 
-## GitLab CI/CD Integration
+## GitHub Actions image publishing
 
-### Connecting Dokploy to GitLab
+The repository now publishes Docker images directly from GitHub Actions, so Hamravesh does not need GitHub repo integration.
 
-1. In Dokploy → Settings → **Git Providers**
-2. Add GitLab provider:
-   - URL: `https://hamgit.ir`
-   - Access Token: `glpat-k3Yeip_9jA7k-aswFcsd_G86MQp1OmVpYgk.01.0z0zd9c6g`
+Images are published to:
 
-### Auto-Deploy on Push
+- `ghcr.io/<github-owner>/novafield-codex/backend:latest`
+- `ghcr.io/<github-owner>/novafield-codex/frontend:latest`
 
-For each application:
-1. Go to application → **General** → **Deploy**
-2. Enable **Auto Deploy**
-3. Set branch: `main`
-4. Set build path: `backend` or `frontend` accordingly
+Use the `hamravesh-images.yml` workflow on every push to `main` or manually via `workflow_dispatch`.
 
-### CI/CD Pipeline (Already Configured)
+### Recommended deployment flow
 
-The project has `.gitlab-ci.yml` at `backend/.gitlab-ci.yml` with 5 stages:
-
-1. **Lint** — `go vet ./...`
-2. **Test** — `go test ./handlers/ -v -count=1`
-3. **Build** — Binary compilation + health check
-4. **Docker** — Image build & push to `registry.hamgit.ir/alitabaei7/novafield`
-5. **Deploy** — Staging (auto) + Production (manual)
-
-### Registry Configuration
-
-Dokploy can pull images from GitLab Container Registry:
-- Registry: `registry.hamgit.ir`
-- Image: `registry.hamgit.ir/alitabaei7/novafield:latest`
+1. Let GitHub Actions build and publish the images.
+2. In Hamravesh, create two apps using **Docker image**.
+3. Point the backend app at the backend image, and the frontend app at the frontend image.
+4. Connect both apps to the PostgreSQL and object storage resources created in the console.
 
 ---
 
@@ -660,7 +645,7 @@ Configure these in GitHub → Settings → Secrets and variables → Actions:
 
 | Secret | Value | Description |
 |--------|-------|-------------|
-| `DARAKUB_API_KEY` | `e1d53948-813b-4712-b68d-e7e032e4ed22` | Darakub API key |
+| `DARAKUB_API_KEY` | `your-darakub-api-key` | Darakub API key |
 | `DARAKUB_REGISTRY_PASS` | (your registry password) | Docker registry auth |
 
 ### GitHub Actions Variables
