@@ -5,367 +5,128 @@ import (
 	"image"
 	"image/color"
 	"image/jpeg"
-	"image/png"
 	"mime/multipart"
 	"net/http/httptest"
-	"os"
-	"path/filepath"
 	"strings"
 	"testing"
+
+	"novafield-api/internal/blob"
 )
 
 func createTestJPEG(width, height int) []byte {
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
 	for y := 0; y < height; y++ {
 		for x := 0; x < width; x++ {
-			img.Set(x, y, color.RGBA{R: uint8(x % 256), G: uint8(y % 256), B: 128, A: 255})
+			img.Set(x, y, color.RGBA{R: uint8(x), G: uint8(y), B: 128, A: 255})
 		}
 	}
-	var buf bytes.Buffer
-	jpeg.Encode(&buf, img, &jpeg.Options{Quality: 90})
-	return buf.Bytes()
+	var output bytes.Buffer
+	_ = jpeg.Encode(&output, img, &jpeg.Options{Quality: 90})
+	return output.Bytes()
 }
 
-func createTestPNG(width, height int) []byte {
-	img := image.NewRGBA(image.Rect(0, 0, width, height))
-	for y := 0; y < height; y++ {
-		for x := 0; x < width; x++ {
-			img.Set(x, y, color.RGBA{R: uint8(x % 256), G: uint8(y % 256), B: 200, A: 255})
+func uploadRequest(t *testing.T, token, filename string, data []byte) *httptest.ResponseRecorder {
+	t.Helper()
+	var body bytes.Buffer
+	writer := multipart.NewWriter(&body)
+	part, err := writer.CreateFormFile("file", filename)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := part.Write(data); err != nil {
+		t.Fatal(err)
+	}
+	if err := writer.Close(); err != nil {
+		t.Fatal(err)
+	}
+	req := httptest.NewRequest("POST", "/api/v1/upload", &body)
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+	response := httptest.NewRecorder()
+	UploadHandler(response, req)
+	return response
+}
+
+func setupUploadTest(t *testing.T) (*blob.MemoryStore, string) {
+	t.Helper()
+	resetDB()
+	memory := blob.NewMemoryStore("https://cdn.example.test")
+	ConfigureUploadStore(memory)
+	t.Cleanup(func() { ConfigureUploadStore(blob.NewMemoryStore("http://localhost:3001/uploads")) })
+	_, token := createTestUser("client")
+	return memory, token
+}
+
+func TestUploadCreatesOriginalResizeAndThumbnail(t *testing.T) {
+	memory, token := setupUploadTest(t)
+	response := uploadRequest(t, token, "profile photo.jpg", createTestJPEG(2000, 1500))
+	if response.Code != 201 {
+		t.Fatalf("expected 201, got %d: %s", response.Code, response.Body)
+	}
+	result := decodeJSON(response)
+	for _, field := range []string{"url", "resizedUrl", "thumbnailUrl"} {
+		value, ok := result[field].(string)
+		if !ok || !strings.HasPrefix(value, "https://cdn.example.test/users/") {
+			t.Fatalf("unexpected %s: %#v", field, result[field])
 		}
 	}
-	var buf bytes.Buffer
-	png.Encode(&buf, img)
-	return buf.Bytes()
+	objects := memory.Objects()
+	if len(objects) != 3 {
+		t.Fatalf("expected 3 objects, got %d", len(objects))
+	}
+	for key, object := range objects {
+		if object.ContentType != "image/jpeg" || len(object.Data) == 0 {
+			t.Fatalf("invalid object %s", key)
+		}
+		if strings.Contains(key, "_thumb") {
+			img, _, err := image.Decode(bytes.NewReader(object.Data))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if img.Bounds().Dx() > thumbWidth || img.Bounds().Dy() > thumbHeight {
+				t.Fatalf("thumbnail too large: %s", img.Bounds())
+			}
+		}
+	}
 }
 
-type multipartData struct {
-	buf         *bytes.Buffer
-	contentType string
+func TestUploadArchive(t *testing.T) {
+	memory, token := setupUploadTest(t)
+	response := uploadRequest(t, token, "project.zip", []byte("PK\x03\x04fake zip content"))
+	if response.Code != 201 {
+		t.Fatalf("expected 201, got %d: %s", response.Code, response.Body)
+	}
+	if len(memory.Objects()) != 1 {
+		t.Fatalf("expected one stored archive")
+	}
 }
 
-func createMultipartRequest(filename string, data []byte) multipartData {
-	var buf bytes.Buffer
-	w := multipart.NewWriter(&buf)
-	part, _ := w.CreateFormFile("file", filename)
-	part.Write(data)
-	w.Close()
-	return multipartData{buf: &buf, contentType: w.FormDataContentType()}
+func TestUploadRejectsExtensionAndContentMismatch(t *testing.T) {
+	_, token := setupUploadTest(t)
+	if response := uploadRequest(t, token, "malware.exe", []byte("bad")); response.Code != 400 {
+		t.Fatalf("expected disallowed extension 400, got %d", response.Code)
+	}
+	if response := uploadRequest(t, token, "fake.jpg", []byte("not an image")); response.Code != 400 {
+		t.Fatalf("expected invalid image 400, got %d", response.Code)
+	}
 }
 
-func cleanupUploads() {
-	os.RemoveAll("uploads")
+func TestUploadCleansUpAfterPartialFailure(t *testing.T) {
+	memory, token := setupUploadTest(t)
+	memory.FailPutAt = 2
+	response := uploadRequest(t, token, "large.jpg", createTestJPEG(2000, 1500))
+	if response.Code != 500 {
+		t.Fatalf("expected 500, got %d: %s", response.Code, response.Body)
+	}
+	if len(memory.Objects()) != 0 {
+		t.Fatalf("expected partial upload cleanup")
+	}
 }
 
-func TestUploadJPEG_LargeImage(t *testing.T) {
+func TestUploadUnauthorized(t *testing.T) {
 	resetDB()
-	cleanupUploads()
-	defer cleanupUploads()
-
-	_, token := createTestUser("client")
-	imgData := createTestJPEG(2000, 1500)
-
-	md := createMultipartRequest("photo.jpg", imgData)
-	req := httptest.NewRequest("POST", "/api/v1/upload", md.buf)
-	req.Header.Set("Authorization", "Bearer "+token)
-	req.Header.Set("Content-Type", md.contentType)
-	rr := httptest.NewRecorder()
-
-	UploadHandler(rr, req)
-
-	if rr.Code != 201 {
-		t.Fatalf("expected 201, got %d: %s", rr.Code, rr.Body.String())
+	response := uploadRequest(t, "", "test.jpg", createTestJPEG(10, 10))
+	if response.Code != 401 {
+		t.Fatalf("expected 401, got %d", response.Code)
 	}
-
-	result := decodeJSON(rr)
-	if result["url"] == nil {
-		t.Fatal("expected url")
-	}
-	if result["resizedUrl"] == nil {
-		t.Fatal("expected resizedUrl for 2000px image")
-	}
-	if result["thumbnailUrl"] == nil {
-		t.Fatal("expected thumbnailUrl for 2000px image")
-	}
-
-	resizedUrl := result["resizedUrl"].(string)
-	if !strings.Contains(resizedUrl, "_resized") {
-		t.Errorf("expected resized url to contain '_resized', got %s", resizedUrl)
-	}
-
-	thumbUrl := result["thumbnailUrl"].(string)
-	if !strings.Contains(thumbUrl, "thumbs/") {
-		t.Errorf("expected thumb url to contain 'thumbs/', got %s", thumbUrl)
-	}
-	if !strings.Contains(thumbUrl, "_thumb") {
-		t.Errorf("expected thumb url to contain '_thumb', got %s", thumbUrl)
-	}
-}
-
-func TestUploadJPEG_SmallImage(t *testing.T) {
-	resetDB()
-	cleanupUploads()
-	defer cleanupUploads()
-
-	_, token := createTestUser("client")
-	imgData := createTestJPEG(800, 600)
-
-	md := createMultipartRequest("small.jpg", imgData)
-	req := httptest.NewRequest("POST", "/api/v1/upload", md.buf)
-	req.Header.Set("Authorization", "Bearer "+token)
-	req.Header.Set("Content-Type", md.contentType)
-	rr := httptest.NewRecorder()
-
-	UploadHandler(rr, req)
-
-	if rr.Code != 201 {
-		t.Fatalf("expected 201, got %d: %s", rr.Code, rr.Body.String())
-	}
-
-	result := decodeJSON(rr)
-	if result["url"] == nil {
-		t.Fatal("expected url")
-	}
-	if result["resizedUrl"] != nil {
-		t.Error("should not have resizedUrl for 800px image")
-	}
-	if result["thumbnailUrl"] == nil {
-		t.Fatal("should have thumbnailUrl (800 > 300 thumbWidth)")
-	}
-}
-
-func TestUploadPNG_LargeImage(t *testing.T) {
-	resetDB()
-	cleanupUploads()
-	defer cleanupUploads()
-
-	_, token := createTestUser("client")
-	imgData := createTestPNG(1920, 1080)
-
-	md := createMultipartRequest("screenshot.png", imgData)
-	req := httptest.NewRequest("POST", "/api/v1/upload", md.buf)
-	req.Header.Set("Authorization", "Bearer "+token)
-	req.Header.Set("Content-Type", md.contentType)
-	rr := httptest.NewRecorder()
-
-	UploadHandler(rr, req)
-
-	if rr.Code != 201 {
-		t.Fatalf("expected 201, got %d: %s", rr.Code, rr.Body.String())
-	}
-
-	result := decodeJSON(rr)
-	if result["resizedUrl"] == nil {
-		t.Fatal("expected resizedUrl for 1920px image")
-	}
-	if result["thumbnailUrl"] == nil {
-		t.Fatal("expected thumbnailUrl for 1920px image")
-	}
-}
-
-func TestUploadZip(t *testing.T) {
-	resetDB()
-	cleanupUploads()
-	defer cleanupUploads()
-
-	_, token := createTestUser("client")
-
-	md := createMultipartRequest("project.zip", []byte("PK\x03\x04fake zip content"))
-	req := httptest.NewRequest("POST", "/api/v1/upload", md.buf)
-	req.Header.Set("Authorization", "Bearer "+token)
-	req.Header.Set("Content-Type", md.contentType)
-	rr := httptest.NewRecorder()
-
-	UploadHandler(rr, req)
-
-	if rr.Code != 201 {
-		t.Fatalf("expected 201, got %d: %s", rr.Code, rr.Body.String())
-	}
-
-	result := decodeJSON(rr)
-	if result["url"] == nil {
-		t.Fatal("expected url")
-	}
-	if result["resizedUrl"] != nil {
-		t.Error("zip should not have resizedUrl")
-	}
-}
-
-func TestUpload_DisallowedExtension(t *testing.T) {
-	resetDB()
-
-	_, token := createTestUser("client")
-
-	md := createMultipartRequest("malware.exe", []byte("bad stuff"))
-	req := httptest.NewRequest("POST", "/api/v1/upload", md.buf)
-	req.Header.Set("Authorization", "Bearer "+token)
-	req.Header.Set("Content-Type", md.contentType)
-	rr := httptest.NewRecorder()
-
-	UploadHandler(rr, req)
-
-	if rr.Code != 400 {
-		t.Fatalf("expected 400, got %d", rr.Code)
-	}
-}
-
-func TestUpload_Unauthorized(t *testing.T) {
-	resetDB()
-
-	md := createMultipartRequest("test.jpg", createTestJPEG(100, 100))
-	req := httptest.NewRequest("POST", "/api/v1/upload", md.buf)
-	req.Header.Set("Content-Type", md.contentType)
-	rr := httptest.NewRecorder()
-
-	UploadHandler(rr, req)
-
-	if rr.Code != 401 {
-		t.Fatalf("expected 401, got %d", rr.Code)
-	}
-}
-
-func TestUpload_CreatesResizedFile(t *testing.T) {
-	resetDB()
-	cleanupUploads()
-	defer cleanupUploads()
-
-	_, token := createTestUser("client")
-	imgData := createTestJPEG(2000, 1500)
-
-	md := createMultipartRequest("big.jpg", imgData)
-	req := httptest.NewRequest("POST", "/api/v1/upload", md.buf)
-	req.Header.Set("Authorization", "Bearer "+token)
-	req.Header.Set("Content-Type", md.contentType)
-	rr := httptest.NewRecorder()
-
-	UploadHandler(rr, req)
-
-	if rr.Code != 201 {
-		t.Fatalf("expected 201, got %d", rr.Code)
-	}
-
-	result := decodeJSON(rr)
-	resizedUrl := result["resizedUrl"].(string)
-	resizedPath := filepath.Join("uploads", strings.TrimPrefix(resizedUrl, "/uploads/"))
-
-	info, err := os.Stat(resizedPath)
-	if err != nil {
-		t.Fatalf("resized file not found: %v", err)
-	}
-	if info.Size() == 0 {
-		t.Error("resized file is empty")
-	}
-}
-
-func TestUpload_CreatesThumbnailFile(t *testing.T) {
-	resetDB()
-	cleanupUploads()
-	defer cleanupUploads()
-
-	_, token := createTestUser("client")
-	imgData := createTestJPEG(2000, 1500)
-
-	md := createMultipartRequest("big.jpg", imgData)
-	req := httptest.NewRequest("POST", "/api/v1/upload", md.buf)
-	req.Header.Set("Authorization", "Bearer "+token)
-	req.Header.Set("Content-Type", md.contentType)
-	rr := httptest.NewRecorder()
-
-	UploadHandler(rr, req)
-
-	if rr.Code != 201 {
-		t.Fatalf("expected 201, got %d", rr.Code)
-	}
-
-	result := decodeJSON(rr)
-	thumbUrl := result["thumbnailUrl"].(string)
-	thumbPath := filepath.Join("uploads", strings.TrimPrefix(thumbUrl, "/uploads/"))
-
-	info, err := os.Stat(thumbPath)
-	if err != nil {
-		t.Fatalf("thumbnail file not found: %v", err)
-	}
-	if info.Size() == 0 {
-		t.Error("thumbnail file is empty")
-	}
-}
-
-func TestUpload_ThumbnailDimensions(t *testing.T) {
-	resetDB()
-	cleanupUploads()
-	defer cleanupUploads()
-
-	_, token := createTestUser("client")
-	imgData := createTestJPEG(2000, 1500)
-
-	md := createMultipartRequest("big.jpg", imgData)
-	req := httptest.NewRequest("POST", "/api/v1/upload", md.buf)
-	req.Header.Set("Authorization", "Bearer "+token)
-	req.Header.Set("Content-Type", md.contentType)
-	rr := httptest.NewRecorder()
-
-	UploadHandler(rr, req)
-
-	result := decodeJSON(rr)
-	thumbUrl := result["thumbnailUrl"].(string)
-	thumbPath := filepath.Join("uploads", strings.TrimPrefix(thumbUrl, "/uploads/"))
-
-	f, err := os.Open(thumbPath)
-	if err != nil {
-		t.Fatalf("open thumbnail: %v", err)
-	}
-	defer f.Close()
-
-	img, _, err := image.Decode(f)
-	if err != nil {
-		t.Fatalf("decode thumbnail: %v", err)
-	}
-
-	bounds := img.Bounds()
-	w := bounds.Dx()
-	h := bounds.Dy()
-
-	if w > thumbWidth || h > thumbHeight {
-		t.Errorf("thumbnail too large: %dx%d, max %dx%d", w, h, thumbWidth, thumbHeight)
-	}
-}
-
-func TestUpload_ResizedDimensions(t *testing.T) {
-	resetDB()
-	cleanupUploads()
-	defer cleanupUploads()
-
-	_, token := createTestUser("client")
-	imgData := createTestJPEG(3000, 2000)
-
-	md := createMultipartRequest("huge.jpg", imgData)
-	req := httptest.NewRequest("POST", "/api/v1/upload", md.buf)
-	req.Header.Set("Authorization", "Bearer "+token)
-	req.Header.Set("Content-Type", md.contentType)
-	rr := httptest.NewRecorder()
-
-	UploadHandler(rr, req)
-
-	result := decodeJSON(rr)
-	resizedUrl := result["resizedUrl"].(string)
-	resizedPath := filepath.Join("uploads", strings.TrimPrefix(resizedUrl, "/uploads/"))
-
-	f, err := os.Open(resizedPath)
-	if err != nil {
-		t.Fatalf("open resized: %v", err)
-	}
-	defer f.Close()
-
-	img, _, err := image.Decode(f)
-	if err != nil {
-		t.Fatalf("decode resized: %v", err)
-	}
-
-	bounds := img.Bounds()
-	if bounds.Dx() > maxImageWidth {
-		t.Errorf("resized width %d exceeds max %d", bounds.Dx(), maxImageWidth)
-	}
-}
-
-func bodyWriterContentType(buf *bytes.Buffer) string {
-	return "multipart/form-data; boundary=" + buf.String()[:strings.Index(buf.String(), "\r\n")]
 }

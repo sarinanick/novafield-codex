@@ -15,195 +15,169 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nfnt/resize"
+	"novafield-api/internal/blob"
 	"novafield-api/store"
+
+	"github.com/nfnt/resize"
 )
 
-var allowedExts = map[string]bool{
-	".jpg": true, ".jpeg": true, ".png": true, ".gif": true, ".webp": true,
-}
-
-var allowedArchiveExts = map[string]bool{
-	".zip": true,
-}
-
+var allowedExts = map[string]bool{".jpg": true, ".jpeg": true, ".png": true, ".gif": true}
+var allowedArchiveExts = map[string]bool{".zip": true}
 var maxUploadSize int64 = 10 << 20
+var maxImageWidth = envInt("IMAGE_MAX_WIDTH", 1200)
+var thumbWidth = envInt("THUMB_WIDTH", 300)
+var thumbHeight = envInt("THUMB_HEIGHT", 300)
+var uploadStore blob.Store = blob.NewMemoryStore("http://localhost:3001/uploads")
 
-var (
-	maxImageWidth = envInt("IMAGE_MAX_WIDTH", 1200)
-	thumbWidth    = envInt("THUMB_WIDTH", 300)
-	thumbHeight   = envInt("THUMB_HEIGHT", 300)
-)
+func ConfigureUploadStore(store blob.Store) { uploadStore = store }
 
 func envInt(key string, fallback int) int {
-	if v := os.Getenv(key); v != "" {
-		if n, err := strconv.Atoi(v); err == nil && n > 0 {
-			return n
+	if value := getenv(key); value != "" {
+		if number, err := strconv.Atoi(value); err == nil && number > 0 {
+			return number
 		}
 	}
 	return fallback
 }
 
+var getenv = os.Getenv
+
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		Error(w, 405, "Method not allowed")
+	if r.Method != http.MethodPost {
+		Error(w, http.StatusMethodNotAllowed, "Method not allowed")
 		return
 	}
-
 	user := GetUser(r)
 	if user == nil {
-		Error(w, 401, "Unauthorized")
+		Error(w, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
-
 	r.Body = http.MaxBytesReader(w, r.Body, maxUploadSize)
 	if err := r.ParseMultipartForm(maxUploadSize); err != nil {
-		Error(w, 400, "File too large (max 10MB)")
+		Error(w, http.StatusBadRequest, "File too large (max 10MB)")
 		return
 	}
-
-	file, handler, err := r.FormFile("file")
+	file, header, err := r.FormFile("file")
 	if err != nil {
-		Error(w, 400, "No file provided")
+		Error(w, http.StatusBadRequest, "No file provided")
 		return
 	}
 	defer file.Close()
 
-	ext := strings.ToLower(filepath.Ext(handler.Filename))
-	isImage := allowedExts[ext]
-	isArchive := allowedArchiveExts[ext]
-
+	ext := strings.ToLower(filepath.Ext(header.Filename))
+	isImage, isArchive := allowedExts[ext], allowedArchiveExts[ext]
 	if !isImage && !isArchive {
-		Error(w, 400, "File type not allowed. Use: jpg, png, gif, webp, zip")
+		Error(w, http.StatusBadRequest, "File type not allowed. Use: jpg, png, gif, zip")
 		return
 	}
-
-	if err := os.MkdirAll("uploads", 0755); err != nil {
-		Error(w, 500, "Failed to create uploads directory")
+	data, err := io.ReadAll(io.LimitReader(file, maxUploadSize+1))
+	if err != nil || int64(len(data)) > maxUploadSize {
+		Error(w, http.StatusBadRequest, "File too large (max 10MB)")
 		return
 	}
-
-	base := strings.TrimSuffix(handler.Filename, filepath.Ext(handler.Filename))
+	contentType := http.DetectContentType(data)
+	if isImage && !strings.HasPrefix(contentType, "image/") {
+		Error(w, http.StatusBadRequest, "Invalid image content")
+		return
+	}
+	if isArchive && contentType != "application/zip" {
+		Error(w, http.StatusBadRequest, "Invalid ZIP content")
+		return
+	}
+	base := strings.TrimSuffix(header.Filename, filepath.Ext(header.Filename))
 	filename := fmt.Sprintf("%s_%s%s", store.NewID()[:8], sanitizeFilename(base), ext)
-	dstPath := filepath.Join("uploads", filename)
-
-	if isImage {
-		data, err := io.ReadAll(file)
-		if err != nil {
-			Error(w, 500, "Failed to read file")
-			return
+	prefix := "users/" + user.ID + "/"
+	originalKey := prefix + filename
+	created := make([]string, 0, 3)
+	put := func(key, kind string, content []byte) error {
+		if err := uploadStore.Put(r.Context(), key, kind, bytes.NewReader(content), int64(len(content))); err != nil {
+			for _, createdKey := range created {
+				_ = uploadStore.Delete(r.Context(), createdKey)
+			}
+			return err
 		}
-
-		if err := os.WriteFile(dstPath, data, 0644); err != nil {
-			Error(w, 500, "Failed to save file")
-			return
-		}
-
-		resizedPath, thumbPath, err := processImage(data, filename, ext)
-		if err != nil {
-			JSON(w, 201, H{
-				"url":      "/uploads/" + filename,
-				"filename": filename,
-			})
-			return
-		}
-
-		resp := H{
-			"url":      "/uploads/" + filename,
-			"filename": filename,
-		}
-		if resizedPath != "" {
-			resp["resizedUrl"] = "/uploads/" + resizedPath
-		}
-		if thumbPath != "" {
-			resp["thumbnailUrl"] = "/uploads/" + thumbPath
-		}
-		JSON(w, 201, resp)
+		created = append(created, key)
+		return nil
+	}
+	if err := put(originalKey, contentType, data); err != nil {
+		Error(w, http.StatusInternalServerError, "Failed to store file")
 		return
 	}
-
-	dst, err := os.Create(dstPath)
+	response := H{"url": uploadStore.PublicURL(originalKey), "filename": filename}
+	if isArchive {
+		JSON(w, http.StatusCreated, response)
+		return
+	}
+	variants, err := processImage(data, filename, ext)
 	if err != nil {
-		Error(w, 500, "Failed to save file")
+		_ = uploadStore.Delete(r.Context(), originalKey)
+		Error(w, http.StatusBadRequest, "Invalid image content")
 		return
 	}
-	defer dst.Close()
-
-	if _, err := io.Copy(dst, file); err != nil {
-		Error(w, 500, "Failed to write file")
-		return
+	for _, variant := range variants {
+		key := prefix + variant.key
+		if err := put(key, variant.contentType, variant.data); err != nil {
+			Error(w, http.StatusInternalServerError, "Failed to store image variants")
+			return
+		}
+		response[variant.responseField] = uploadStore.PublicURL(key)
 	}
-
-	JSON(w, 201, H{"url": "/uploads/" + filename, "filename": filename})
+	JSON(w, http.StatusCreated, response)
 }
 
-func processImage(data []byte, filename, ext string) (resizedPath, thumbPath string, err error) {
+type imageVariant struct {
+	key, contentType, responseField string
+	data                            []byte
+}
+
+func processImage(data []byte, filename, ext string) ([]imageVariant, error) {
 	img, _, err := image.Decode(bytes.NewReader(data))
 	if err != nil {
-		return "", "", err
+		return nil, err
 	}
-
-	bounds := img.Bounds()
-	width := bounds.Dx()
-	height := bounds.Dy()
-
-	if width <= maxImageWidth && width <= thumbWidth {
-		return "", "", nil
+	width := img.Bounds().Dx()
+	if width <= thumbWidth {
+		return nil, nil
 	}
-
-	if err := os.MkdirAll("uploads/thumbs", 0755); err != nil {
-		return "", "", err
-	}
-
 	baseName := strings.TrimSuffix(filename, ext)
-
+	variants := make([]imageVariant, 0, 2)
 	if width > maxImageWidth {
-		resized := resize.Resize(uint(maxImageWidth), 0, img, resize.Lanczos3)
-		resizedName := baseName + "_resized" + ext
-		resizedPath = filepath.Join("uploads", resizedName)
-		if err := encodeImage(resizedPath, ext, resized); err != nil {
-			return "", "", err
+		encoded, contentType, err := encodeImage(ext, resize.Resize(uint(maxImageWidth), 0, img, resize.Lanczos3))
+		if err != nil {
+			return nil, err
 		}
-		resizedPath = resizedName
+		variants = append(variants, imageVariant{baseName + "_resized" + ext, contentType, "resizedUrl", encoded})
 	}
-
-	thumb := resize.Thumbnail(uint(thumbWidth), uint(thumbHeight), img, resize.Lanczos3)
-	thumbName := baseName + "_thumb" + ext
-	thumbPathFull := filepath.Join("uploads/thumbs", thumbName)
-	if err := encodeImage(thumbPathFull, ext, thumb); err != nil {
-		return resizedPath, "", err
+	encoded, contentType, err := encodeImage(ext, resize.Thumbnail(uint(thumbWidth), uint(thumbHeight), img, resize.Lanczos3))
+	if err != nil {
+		return nil, err
 	}
-	thumbPath = "thumbs/" + thumbName
-
-	_ = height
-	return resizedPath, thumbPath, nil
+	variants = append(variants, imageVariant{"thumbs/" + baseName + "_thumb" + ext, contentType, "thumbnailUrl", encoded})
+	return variants, nil
 }
 
-func encodeImage(path, ext string, img image.Image) error {
-	f, err := os.Create(path)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
+func encodeImage(ext string, img image.Image) ([]byte, string, error) {
+	var output bytes.Buffer
+	var err error
+	contentType := "image/png"
 	switch ext {
 	case ".jpg", ".jpeg":
-		return jpeg.Encode(f, img, &jpeg.Options{Quality: 85})
-	case ".png":
-		return png.Encode(f, img)
+		contentType = "image/jpeg"
+		err = jpeg.Encode(&output, img, &jpeg.Options{Quality: 85})
 	case ".gif":
-		return gif.Encode(f, img, nil)
+		contentType = "image/gif"
+		err = gif.Encode(&output, img, nil)
 	default:
-		return png.Encode(f, img)
+		err = png.Encode(&output, img)
 	}
+	return output.Bytes(), contentType, err
 }
 
 var unsafeChars = regexp.MustCompile(`[^a-zA-Z0-9_\-]`)
 
 func sanitizeFilename(name string) string {
 	name = filepath.Base(name)
-	ext := filepath.Ext(name)
-	name = strings.TrimSuffix(name, ext)
+	name = strings.TrimSuffix(name, filepath.Ext(name))
 	name = unsafeChars.ReplaceAllString(name, "_")
 	if name == "" {
 		name = "file"

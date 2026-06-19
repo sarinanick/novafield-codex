@@ -133,8 +133,6 @@ func main() {
 	mux.HandleFunc("/api/v1/admin/support/tickets/", authMiddleware(handlers.AdminUpdateTicketHandler))
 	mux.HandleFunc("/api/v1/admin", authMiddleware(adminRouter))
 	mux.HandleFunc("/api/v1/admin/", authMiddleware(adminActionRouter))
-	mux.Handle("/uploads/", http.StripPrefix("/uploads/", http.FileServer(http.Dir("uploads"))))
-
 	handler := corsMiddleware(loggingMiddleware(mux))
 
 	port := os.Getenv("PORT")
