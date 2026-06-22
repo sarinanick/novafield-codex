@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 
 const Navbar = dynamic(() => import("@/components/Navbar"), { ssr: false });
 const Hero = dynamic(() => import("@/components/Hero"), { ssr: false });
+const Marquee = dynamic(() => import("@/components/Marquee"), { ssr: false });
 const Features = dynamic(() => import("@/components/Features"), { ssr: false });
 const Models = dynamic(() => import("@/components/Models"), { ssr: false });
 const Gallery = dynamic(() => import("@/components/Gallery"), { ssr: false });
@@ -14,9 +15,10 @@ const Footer = dynamic(() => import("@/components/Footer"), { ssr: false });
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-background noise-bg">
+    <main className="min-h-screen bg-canvas">
       <Navbar />
       <Hero />
+      <Marquee />
       <Features />
       <Models />
       <Gallery />
