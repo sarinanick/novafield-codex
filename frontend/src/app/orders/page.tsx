@@ -10,10 +10,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { useToast } from "@/components/toast";
 
 export default function OrdersPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const { addToast } = useToast();
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("active");
@@ -37,8 +39,9 @@ export default function OrdersPage() {
     setActionLoading(orderId);
     try {
       await api.deliverOrder(orderId, { file: "delivery.zip", notes: "Here is your delivery" });
+      addToast("success", "Order Delivered", "Your delivery has been sent to the buyer.");
       loadOrders();
-    } catch (err: any) { alert(err.message); }
+    } catch (err: any) { addToast("error", "Delivery Failed", err.message); }
     setActionLoading(null);
   };
 
@@ -46,8 +49,9 @@ export default function OrdersPage() {
     setActionLoading(orderId);
     try {
       await api.approveOrder(orderId);
+      addToast("success", "Order Approved", "Payment has been released to the seller.");
       loadOrders();
-    } catch (err: any) { alert(err.message); }
+    } catch (err: any) { addToast("error", "Approval Failed", err.message); }
     setActionLoading(null);
   };
 
@@ -55,8 +59,9 @@ export default function OrdersPage() {
     setActionLoading(orderId);
     try {
       await api.requestRevision(orderId, { message: "Please make revisions" });
+      addToast("info", "Revision Requested", "The seller has been notified.");
       loadOrders();
-    } catch (err: any) { alert(err.message); }
+    } catch (err: any) { addToast("error", "Revision Failed", err.message); }
     setActionLoading(null);
   };
 

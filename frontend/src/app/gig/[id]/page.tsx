@@ -11,11 +11,13 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { useToast } from "@/components/toast";
 
 export default function GigDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { user } = useAuth();
+  const { addToast } = useToast();
   const [gig, setGig] = useState<any>(null);
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,7 +45,7 @@ export default function GigDetailPage() {
     try {
       await api.createOrder({ gigId: gig.id, packageId: selectedPackage.id, requirements: "" });
       router.push("/orders");
-    } catch (err: any) { alert(err.message); }
+    } catch (err: any) { addToast("error", "Order Failed", err.message); }
     setOrdering(false);
   };
 

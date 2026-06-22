@@ -6,6 +6,7 @@ import { RealtimeProvider } from "@/lib/realtime-context";
 import { ThemeProvider } from "@/lib/theme-context";
 import { ShortcutsProvider } from "@/lib/shortcuts";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { ToastProvider } from "@/components/toast";
 import SearchModal from "@/components/search-modal";
 import ShortcutsHelp from "@/components/shortcuts-help";
 
@@ -61,9 +62,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <AuthProvider>
               <ShortcutsProvider>
                 <RealtimeProvider>
-                  {children}
-                  <SearchModal />
-                  <ShortcutsHelp />
+                  <ToastProvider>
+                    {children}
+                    <SearchModal />
+                    <ShortcutsHelp />
+                  </ToastProvider>
                 </RealtimeProvider>
               </ShortcutsProvider>
             </AuthProvider>

@@ -10,10 +10,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { useToast } from "@/components/toast";
 
 export default function CreateGigPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const { addToast } = useToast();
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
@@ -58,7 +60,7 @@ export default function CreateGigPage() {
       };
       const res = await api.createGig(payload);
       router.push(`/gig/${res.id}`);
-    } catch (err: any) { alert(err.message); }
+    } catch (err: any) { addToast("error", "Publish Failed", err.message); }
     setLoading(false);
   };
 

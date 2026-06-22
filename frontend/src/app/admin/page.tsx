@@ -11,10 +11,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { useAuth } from "@/lib/auth-context";
 import { api } from "@/lib/api";
+import { useToast } from "@/components/toast";
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { addToast } = useToast();
   const [members, setMembers] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
@@ -80,7 +82,7 @@ export default function AdminPage() {
       setInviteRole("client");
       loadMembers();
     } catch (err: any) {
-      alert(err.message || "Failed to invite member");
+      addToast("error", "Invite Failed", err.message || "Failed to invite member");
     } finally {
       setInviting(false);
     }
@@ -93,7 +95,7 @@ export default function AdminPage() {
       setActionMenuId(null);
       loadMembers();
     } catch (err: any) {
-      alert(err.message || "Failed to change role");
+      addToast("error", "Role Change Failed", err.message || "Failed to change role");
     } finally {
       setProcessing(false);
     }
@@ -107,7 +109,7 @@ export default function AdminPage() {
       setConfirmAction(null);
       loadMembers();
     } catch (err: any) {
-      alert(err.message || "Failed to remove member");
+      addToast("error", "Remove Failed", err.message || "Failed to remove member");
     } finally {
       setProcessing(false);
     }
@@ -121,7 +123,7 @@ export default function AdminPage() {
       setConfirmAction(null);
       loadMembers();
     } catch (err: any) {
-      alert(err.message || "Failed to demote member");
+      addToast("error", "Demote Failed", err.message || "Failed to demote member");
     } finally {
       setProcessing(false);
     }
@@ -132,7 +134,7 @@ export default function AdminPage() {
       setSavingSettings(true);
       await api.updateAdminSettings(settings);
     } catch (err: any) {
-      alert(err.message || "Failed to save settings");
+      addToast("error", "Save Failed", err.message || "Failed to save settings");
     } finally {
       setSavingSettings(false);
     }
@@ -376,9 +378,9 @@ export default function AdminPage() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-surface-soft">
                   <div className="flex items-center gap-3">
-                    {settings.guestAccess ? <Eye className="w-5 h-5 text-emerald-400" /> : <EyeOff className="w-5 h-5 text-muted-foreground" />}
+                    {settings.guestAccess ? <Eye className="w-5 h-5 text-semantic-success" /> : <EyeOff className="w-5 h-5 text-muted-foreground" />}
                     <div>
                       <p className="text-sm font-medium">Guest Access</p>
                       <p className="text-xs text-muted-foreground">Allow guest users to view the workspace</p>
@@ -392,9 +394,9 @@ export default function AdminPage() {
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-surface-soft">
                   <div className="flex items-center gap-3">
-                    <Bell className={`w-5 h-5 ${settings.emailNotify ? "text-blue-400" : "text-muted-foreground"}`} />
+                    <Bell className={`w-5 h-5 ${settings.emailNotify ? "text-primary" : "text-muted-foreground"}`} />
                     <div>
                       <p className="text-sm font-medium">Email Notifications</p>
                       <p className="text-xs text-muted-foreground">Send email notifications for important events</p>
