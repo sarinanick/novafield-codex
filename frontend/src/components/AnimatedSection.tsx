@@ -69,10 +69,14 @@ export function StaggerContainer({
   children,
   className = "",
   staggerDelay = 0.1,
+  role,
+  "aria-label": ariaLabel,
 }: {
   children: ReactNode;
   className?: string;
   staggerDelay?: number;
+  role?: string;
+  "aria-label"?: string;
 }) {
   return (
     <motion.div
@@ -84,6 +88,8 @@ export function StaggerContainer({
         visible: { transition: { staggerChildren: staggerDelay } },
       }}
       className={className}
+      role={role}
+      aria-label={ariaLabel}
     >
       {children}
     </motion.div>
@@ -93,9 +99,11 @@ export function StaggerContainer({
 export function StaggerItem({
   children,
   className = "",
+  role,
 }: {
   children: ReactNode;
   className?: string;
+  role?: string;
 }) {
   return (
     <motion.div
@@ -109,6 +117,7 @@ export function StaggerItem({
         },
       }}
       className={className}
+      role={role}
     >
       {children}
     </motion.div>

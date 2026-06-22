@@ -19,13 +19,14 @@ export function useKeyboard(
   useEffect(() => {
     const targetElement = target === "document" ? document : window;
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === key) {
-        handler(event);
+    const handleKeyDown = (event: Event) => {
+      const kbEvent = event as unknown as KeyboardEvent;
+      if (kbEvent.key === key) {
+        handler(kbEvent);
       }
     };
 
-    targetElement.addEventListener("keydown", handleKeyDown, { capture });
+    targetElement.addEventListener("keydown", handleKeyDown as EventListener, { capture });
 
     return () => {
       targetElement.removeEventListener("keydown", handleKeyDown, { capture });
@@ -51,25 +52,26 @@ export function useArrowKeys(
   options?: UseKeyboardOptions
 ) {
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      switch (event.key) {
+    const handleKeyDown = (event: Event) => {
+      const kbEvent = event as unknown as KeyboardEvent;
+      switch (kbEvent.key) {
         case "ArrowUp":
-          handlers.up?.(event);
+          handlers.up?.(kbEvent);
           break;
         case "ArrowDown":
-          handlers.down?.(event);
+          handlers.down?.(kbEvent);
           break;
         case "ArrowLeft":
-          handlers.left?.(event);
+          handlers.left?.(kbEvent);
           break;
         case "ArrowRight":
-          handlers.right?.(event);
+          handlers.right?.(kbEvent);
           break;
       }
     };
 
     const targetElement = options?.target === "window" ? window : document;
-    targetElement.addEventListener("keydown", handleKeyDown, {
+    targetElement.addEventListener("keydown", handleKeyDown as EventListener, {
       capture: options?.capture,
     });
 

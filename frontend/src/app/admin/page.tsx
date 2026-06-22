@@ -288,7 +288,7 @@ export default function AdminPage() {
                                 initial={{ opacity: 0, y: -5 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -5 }}
-                                className="absolute right-0 top-full mt-1 w-48 glass-card rounded-xl border border-white/10 shadow-2xl p-1 z-10"
+                                className="absolute right-0 top-full mt-1 w-48 rounded-xl border border-hairline bg-canvas shadow-xl p-1 z-10"
                               >
                                 <button
                                   onClick={() => { handleRoleChange(member.id, "admin"); }}
