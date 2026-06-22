@@ -16,11 +16,11 @@ const tools = [
 
 export default function Features() {
   return (
-    <section id="features" className="bg-canvas py-section">
+    <section id="features" className="bg-canvas py-section" aria-labelledby="features-heading">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
         <AnimatedSection className="text-center mb-16">
-          <p className="text-eyebrow text-muted-foreground mb-4">TOOLS</p>
-          <h2 className="text-display-lg text-ink mb-6">
+          <p className="text-eyebrow text-muted-foreground mb-4" aria-hidden="true">TOOLS</p>
+          <h2 id="features-heading" className="text-display-lg text-ink mb-6">
             Everything you need to
             <br />
             bring your vision to life
@@ -31,23 +31,28 @@ export default function Features() {
           </p>
         </AnimatedSection>
 
-        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" staggerDelay={0.08}>
+        <StaggerContainer
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+          staggerDelay={0.08}
+          role="list"
+          aria-label="Available tools and features"
+        >
           {tools.map((tool) => (
-            <StaggerItem key={tool.title}>
-              <div className="bg-surface-soft rounded-md p-6 h-full cursor-pointer hover:shadow-md transition-shadow">
-                <div className="w-12 h-12 bg-canvas border border-hairline rounded-md flex items-center justify-center mb-4">
+            <StaggerItem key={tool.title} role="listitem">
+              <article className="bg-surface-soft rounded-md p-6 h-full cursor-pointer hover:shadow-md transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                <div className="w-12 h-12 bg-canvas border border-hairline rounded-md flex items-center justify-center mb-4" aria-hidden="true">
                   <tool.icon className="w-6 h-6 text-ink" />
                 </div>
                 <h3 className="text-card-title text-ink mb-2 flex items-center gap-2">
                   {tool.title}
                   {tool.badge && (
-                    <span className="text-caption px-2 py-0.5 rounded-full bg-block-lime text-ink">
+                    <span className="text-caption px-2 py-0.5 rounded-full bg-block-lime text-ink" aria-label={`Badge: ${tool.badge}`}>
                       {tool.badge}
                     </span>
                   )}
                 </h3>
                 <p className="text-body-sm text-muted-foreground">{tool.desc}</p>
-              </div>
+              </article>
             </StaggerItem>
           ))}
         </StaggerContainer>

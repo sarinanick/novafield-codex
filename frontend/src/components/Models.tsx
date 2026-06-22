@@ -22,11 +22,11 @@ const imageModels = [
 
 export default function Models() {
   return (
-    <section id="tools" className="bg-canvas py-section">
+    <section id="tools" className="bg-canvas py-section" aria-labelledby="models-heading">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
         <AnimatedSection className="text-center mb-16">
-          <p className="text-eyebrow text-muted-foreground mb-4">AI MODELS</p>
-          <h2 className="text-display-lg text-ink mb-6">
+          <p className="text-eyebrow text-muted-foreground mb-4" aria-hidden="true">AI MODELS</p>
+          <h2 id="models-heading" className="text-display-lg text-ink mb-6">
             30+ AI Models
           </h2>
           <p className="text-body-lg text-muted-foreground max-w-xl mx-auto">
@@ -36,25 +36,30 @@ export default function Models() {
 
         <Tabs defaultValue="video" className="w-full">
           <AnimatedSection delay={0.2} className="flex justify-center mb-12">
-            <TabsList className="bg-surface-soft border border-hairline p-1 rounded-pill h-12">
+            <TabsList className="bg-surface-soft border border-hairline p-1 rounded-pill h-12" aria-label="Model type selection">
               <TabsTrigger value="video" className="px-6 text-body-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-pill transition-all duration-300">
-                <Film className="w-4 h-4 mr-2" />
+                <Film className="w-4 h-4 mr-2" aria-hidden="true" />
                 Video Models
               </TabsTrigger>
               <TabsTrigger value="image" className="px-6 text-body-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-pill transition-all duration-300">
-                <Image className="w-4 h-4 mr-2" />
+                <Image className="w-4 h-4 mr-2" aria-hidden="true" />
                 Image Models
               </TabsTrigger>
             </TabsList>
           </AnimatedSection>
 
           <TabsContent value="video">
-            <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" staggerDelay={0.08}>
+            <StaggerContainer
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+              staggerDelay={0.08}
+              role="list"
+              aria-label="Video models"
+            >
               {videoModels.map((model) => (
-                <StaggerItem key={model.id}>
-                  <div className="bg-surface-soft border border-hairline rounded-md p-6 cursor-pointer hover:shadow-md transition-shadow">
+                <StaggerItem key={model.id} role="listitem">
+                  <article className="bg-surface-soft border border-hairline rounded-md p-6 cursor-pointer hover:shadow-md transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-canvas border border-hairline rounded-md flex items-center justify-center shrink-0">
+                      <div className="w-12 h-12 bg-canvas border border-hairline rounded-md flex items-center justify-center shrink-0" aria-hidden="true">
                         <model.icon className="w-6 h-6 text-ink" />
                       </div>
                       <div>
@@ -62,19 +67,24 @@ export default function Models() {
                         <p className="text-body-sm text-muted-foreground">{model.desc}</p>
                       </div>
                     </div>
-                  </div>
+                  </article>
                 </StaggerItem>
               ))}
             </StaggerContainer>
           </TabsContent>
 
           <TabsContent value="image">
-            <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" staggerDelay={0.08}>
+            <StaggerContainer
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+              staggerDelay={0.08}
+              role="list"
+              aria-label="Image models"
+            >
               {imageModels.map((model) => (
-                <StaggerItem key={model.id}>
-                  <div className="bg-surface-soft border border-hairline rounded-md p-6 cursor-pointer hover:shadow-md transition-shadow">
+                <StaggerItem key={model.id} role="listitem">
+                  <article className="bg-surface-soft border border-hairline rounded-md p-6 cursor-pointer hover:shadow-md transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-canvas border border-hairline rounded-md flex items-center justify-center shrink-0">
+                      <div className="w-12 h-12 bg-canvas border border-hairline rounded-md flex items-center justify-center shrink-0" aria-hidden="true">
                         <model.icon className="w-6 h-6 text-ink" />
                       </div>
                       <div>
@@ -82,7 +92,7 @@ export default function Models() {
                         <p className="text-body-sm text-muted-foreground">{model.desc}</p>
                       </div>
                     </div>
-                  </div>
+                  </article>
                 </StaggerItem>
               ))}
             </StaggerContainer>

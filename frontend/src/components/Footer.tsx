@@ -25,15 +25,15 @@ const footerLinks = {
 };
 
 const socials = [
-  { name: "X", href: "https://twitter.com" },
-  { name: "GitHub", href: "https://github.com" },
-  { name: "Discord", href: "https://discord.gg" },
-  { name: "YouTube", href: "https://youtube.com" },
+  { name: "X", href: "https://twitter.com", label: "Follow us on X (Twitter)" },
+  { name: "GitHub", href: "https://github.com", label: "View our GitHub" },
+  { name: "Discord", href: "https://discord.gg", label: "Join our Discord" },
+  { name: "YouTube", href: "https://youtube.com", label: "Watch our YouTube" },
 ];
 
 export default function Footer() {
   return (
-    <footer className="bg-canvas border-t border-hairline">
+    <footer className="bg-canvas border-t border-hairline" role="contentinfo">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-section">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-12 mb-16">
           <div className="col-span-2">
@@ -43,12 +43,16 @@ export default function Footer() {
             <p className="text-body-sm text-muted-foreground max-w-xs mb-6">
               AI video and image generation platform with 30+ models. From concept to cinema in seconds.
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-3" role="list" aria-label="Social media links">
               {socials.map((social) => (
                 <a
                   key={social.name}
                   href={social.href}
-                  className="w-9 h-9 rounded-full bg-surface-soft flex items-center justify-center text-caption text-muted-foreground hover:text-ink hover:bg-hairline transition-colors"
+                  className="w-9 h-9 rounded-full bg-surface-soft flex items-center justify-center text-caption text-muted-foreground hover:text-ink hover:bg-hairline transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  aria-label={social.label}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  role="listitem"
                 >
                   {social.name[0]}
                 </a>
@@ -57,27 +61,48 @@ export default function Footer() {
           </div>
 
           {Object.entries(footerLinks).map(([category, links]) => (
-            <div key={category}>
+            <nav key={category} aria-label={`${category} links`}>
               <h4 className="text-caption text-muted-foreground mb-4">{category}</h4>
-              <ul className="space-y-3">
+              <ul className="space-y-3" role="list">
                 {links.map((link) => (
-                  <li key={link.label}>
-                    <a href={link.href} className="text-body-sm text-muted-foreground hover:text-ink transition-colors">
+                  <li key={link.label} role="listitem">
+                    <a
+                      href={link.href}
+                      className="text-body-sm text-muted-foreground hover:text-ink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    >
                       {link.label}
                     </a>
                   </li>
                 ))}
               </ul>
-            </div>
+            </nav>
           ))}
         </div>
 
         <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-hairline-soft">
           <p className="text-caption text-muted-foreground">© 2024 NOVAFIELD. ALL RIGHTS RESERVED.</p>
-          <div className="flex gap-6 mt-4 md:mt-0">
-            <a href="#" className="text-caption text-muted-foreground hover:text-ink transition-colors">PRIVACY</a>
-            <a href="#" className="text-caption text-muted-foreground hover:text-ink transition-colors">TERMS</a>
-            <a href="#" className="text-caption text-muted-foreground hover:text-ink transition-colors">COOKIES</a>
+          <div className="flex gap-6 mt-4 md:mt-0" role="list" aria-label="Legal links">
+            <a
+              href="#"
+              className="text-caption text-muted-foreground hover:text-ink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              role="listitem"
+            >
+              PRIVACY
+            </a>
+            <a
+              href="#"
+              className="text-caption text-muted-foreground hover:text-ink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              role="listitem"
+            >
+              TERMS
+            </a>
+            <a
+              href="#"
+              className="text-caption text-muted-foreground hover:text-ink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              role="listitem"
+            >
+              COOKIES
+            </a>
           </div>
         </div>
       </div>
