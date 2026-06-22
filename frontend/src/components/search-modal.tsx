@@ -192,9 +192,9 @@ export default function SearchModal() {
 
   return (
     <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
-      <DialogContent className="max-w-xl p-0 gap-0 overflow-hidden glass-card border-white/10">
-        <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5">
-          <Search className="w-5 h-5 text-muted-foreground shrink-0" />
+      <DialogContent className="max-w-xl p-0 gap-0 overflow-hidden border border-hairline">
+        <div className="flex items-center gap-3 px-4 py-3 border-b border-hairline">
+          <Search className="w-5 h-5 text-muted-foreground shrink-0" aria-hidden="true" />
           <Input
             ref={inputRef}
             placeholder="Search users, zones, gigs, meetings..."
@@ -202,8 +202,9 @@ export default function SearchModal() {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 h-auto text-base"
+            aria-label="Search NovaField"
           />
-          <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-[10px] text-muted-foreground bg-muted rounded border border-white/5">
+          <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-[10px] text-muted-foreground bg-surface-soft rounded border border-hairline-soft">
             ESC
           </kbd>
         </div>
@@ -285,19 +286,19 @@ export default function SearchModal() {
           )}
         </div>
 
-        <div className="flex items-center justify-between px-4 py-2 border-t border-white/5 text-[10px] text-muted-foreground">
+        <div className="flex items-center justify-between px-4 py-2 border-t border-hairline text-[10px] text-muted-foreground">
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1">
-              <kbd className="px-1 py-0.5 bg-muted rounded border border-white/5">↑↓</kbd>
+              <kbd className="px-1 py-0.5 bg-surface-soft rounded border border-hairline-soft">↑↓</kbd>
               navigate
             </span>
             <span className="flex items-center gap-1">
-              <kbd className="px-1 py-0.5 bg-muted rounded border border-white/5">↵</kbd>
+              <kbd className="px-1 py-0.5 bg-surface-soft rounded border border-hairline-soft">↵</kbd>
               select
             </span>
           </div>
           <span className="flex items-center gap-1">
-            <kbd className="px-1 py-0.5 bg-muted rounded border border-white/5">esc</kbd>
+            <kbd className="px-1 py-0.5 bg-surface-soft rounded border border-hairline-soft">esc</kbd>
             close
           </span>
         </div>
