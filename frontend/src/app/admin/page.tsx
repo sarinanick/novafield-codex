@@ -264,7 +264,7 @@ export default function AdminPage() {
                 ) : (
                   <div className="space-y-2">
                     {filtered.map((member) => (
-                      <div key={member.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors group">
+                      <div key={member.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-soft transition-colors group">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-blue-500 flex items-center justify-center text-xs font-bold shrink-0">
                           {member.name?.[0] || "?"}
                         </div>
@@ -278,7 +278,7 @@ export default function AdminPage() {
                         <div className="relative">
                           <button
                             onClick={() => setActionMenuId(actionMenuId === member.id ? null : member.id)}
-                            className="p-2 rounded-lg hover:bg-white/5 transition-colors opacity-0 group-hover:opacity-100"
+                            className="p-2 rounded-lg hover:bg-surface-soft transition-colors opacity-0 group-hover:opacity-100"
                           >
                             <ChevronDown className="w-4 h-4" />
                           </button>
@@ -293,30 +293,30 @@ export default function AdminPage() {
                                 <button
                                   onClick={() => { handleRoleChange(member.id, "admin"); }}
                                   disabled={member.role === "admin" || processing}
-                                  className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-white/5 transition-colors disabled:opacity-40"
+                                  className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-surface-soft transition-colors disabled:opacity-40"
                                 >
                                   Make Admin
                                 </button>
                                 <button
                                   onClick={() => { handleRoleChange(member.id, "freelancer"); }}
                                   disabled={member.role === "freelancer" || processing}
-                                  className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-white/5 transition-colors disabled:opacity-40"
+                                  className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-surface-soft transition-colors disabled:opacity-40"
                                 >
                                   Make Freelancer
                                 </button>
                                 <button
                                   onClick={() => { handleRoleChange(member.id, "client"); }}
                                   disabled={member.role === "client" || processing}
-                                  className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-white/5 transition-colors disabled:opacity-40"
+                                  className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-surface-soft transition-colors disabled:opacity-40"
                                 >
                                   Make Client
                                 </button>
-                                <div className="border-t border-white/5 my-1" />
+                                <div className="border-t border-hairline-soft my-1" />
                                 {member.role !== "client" && (
                                   <button
                                     onClick={() => setConfirmAction({ type: "demote", id: member.id, name: member.name })}
                                     disabled={processing}
-                                    className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-white/5 text-amber-400 transition-colors disabled:opacity-40"
+                                    className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-surface-soft text-amber-400 transition-colors disabled:opacity-40"
                                   >
                                     Demote to Guest
                                   </button>
@@ -324,7 +324,7 @@ export default function AdminPage() {
                                 <button
                                   onClick={() => setConfirmAction({ type: "remove", id: member.id, name: member.name })}
                                   disabled={processing}
-                                  className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-white/5 text-red-400 transition-colors disabled:opacity-40"
+                                  className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-surface-soft text-red-400 transition-colors disabled:opacity-40"
                                 >
                                   Remove Member
                                 </button>
