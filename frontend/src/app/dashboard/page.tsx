@@ -46,17 +46,18 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen pt-20 pb-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen px-4 pb-16 pt-24 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <div className="flex justify-between items-center mb-8">
+          <div className="section-block block-lilac mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <h1 className="text-3xl font-bold">Welcome back, {user.name}</h1>
-              <p className="text-muted-foreground mt-1">Here&apos;s your {user.role === "freelancer" ? "seller" : "buyer"} dashboard</p>
+              <div className="mono-eyebrow text-black/70">Dashboard</div>
+              <h1 className="mt-3 text-4xl font-light tracking-[-0.05em]">Welcome back, {user.name}</h1>
+              <p className="mt-2 text-black/70">Here&apos;s your {user.role === "freelancer" ? "seller" : "buyer"} dashboard</p>
             </div>
             {user.role === "freelancer" && (
               <Link href="/create-gig">
-                <Button variant="glow"><Plus className="w-4 h-4 mr-2" /> Create New Gig</Button>
+                <Button><Plus className="w-4 h-4 mr-2" /> Create New Gig</Button>
               </Link>
             )}
           </div>

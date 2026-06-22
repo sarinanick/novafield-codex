@@ -76,14 +76,16 @@ export default function CreateGigPage() {
   if (authLoading) return <div className="min-h-screen pt-20 flex items-center justify-center"><div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full" /></div>;
 
   return (
-    <div className="min-h-screen pt-20 pb-16">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen px-4 pb-16 pt-24 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-4xl">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <div className="flex items-center gap-3 mb-8">
+          <div className="section-block block-cream mb-8">
+          <div className="flex items-center gap-3 mb-6">
             <button onClick={() => router.back()} className="p-2 hover:bg-white/10 rounded-lg"><ArrowLeft className="w-5 h-5" /></button>
             <div>
-              <h1 className="text-3xl font-bold">Create a Gig</h1>
-              <p className="text-muted-foreground">Step {step} of 3</p>
+              <div className="mono-eyebrow text-black/70">Create gig</div>
+              <h1 className="mt-2 text-4xl font-light tracking-[-0.05em]">Create a Gig</h1>
+              <p className="text-black/60">Step {step} of 3</p>
             </div>
           </div>
 
@@ -95,7 +97,7 @@ export default function CreateGigPage() {
           </div>
 
           {step === 1 && (
-            <Card className="glass-card border-white/5">
+            <Card className="sheet">
               <CardContent className="p-6 space-y-6">
                 <h2 className="text-xl font-semibold">Gig Details</h2>
                 <div className="space-y-2">
@@ -104,11 +106,11 @@ export default function CreateGigPage() {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Description</label>
-                  <textarea className="w-full h-32 rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" placeholder="Describe your service in detail..." value={form.description} onChange={e => updateForm("description", e.target.value)} />
+                  <textarea className="w-full h-32 rounded-xl border border-black/10 bg-white px-4 py-3 text-sm placeholder:text-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black" placeholder="Describe your service in detail..." value={form.description} onChange={e => updateForm("description", e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Category</label>
-                  <select className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm" value={form.category} onChange={e => updateForm("category", e.target.value)}>
+                  <select className="w-full h-12 rounded-xl border border-black/10 bg-white px-4 text-sm" value={form.category} onChange={e => updateForm("category", e.target.value)}>
                     <option value="">Select category</option>
                     {categories.map((c: any) => <option key={c.id} value={c.slug}>{c.name}</option>)}
                   </select>
@@ -133,18 +135,18 @@ export default function CreateGigPage() {
                   ))}
                   <Button variant="outline" size="sm" onClick={addTool} className="border-white/10"><Plus className="w-3 h-3 mr-1" /> Add Tool</Button>
                 </div>
-                <Button variant="glow" className="w-full" onClick={() => setStep(2)}>Continue</Button>
+                  <Button className="w-full" onClick={() => setStep(2)}>Continue</Button>
               </CardContent>
             </Card>
           )}
 
           {step === 2 && (
-            <Card className="glass-card border-white/5">
+            <Card className="sheet">
               <CardContent className="p-6 space-y-6">
                 <h2 className="text-xl font-semibold">Pricing Packages</h2>
                 <div className="grid gap-6">
                   {packages.map((pkg, i) => (
-                    <div key={i} className="glass-card rounded-xl p-5 space-y-4">
+                    <div key={i} className="soft-sheet rounded-3xl p-5 space-y-4">
                       <div className="flex justify-between items-center">
                         <h3 className="font-semibold">{pkg.name}</h3>
                         <span className="text-2xl font-bold">${pkg.price}</span>
@@ -177,18 +179,18 @@ export default function CreateGigPage() {
                   ))}
                 </div>
                 <div className="flex gap-3">
-                  <Button variant="outline" className="flex-1 border-white/10" onClick={() => setStep(1)}>Back</Button>
-                  <Button variant="glow" className="flex-1" onClick={() => setStep(3)}>Continue</Button>
+                  <Button variant="outline" className="flex-1" onClick={() => setStep(1)}>Back</Button>
+                  <Button className="flex-1" onClick={() => setStep(3)}>Continue</Button>
                 </div>
               </CardContent>
             </Card>
           )}
 
           {step === 3 && (
-            <Card className="glass-card border-white/5">
+            <Card className="sheet">
               <CardContent className="p-6 space-y-6">
                 <h2 className="text-xl font-semibold">Review & Publish</h2>
-                <div className="glass-card rounded-xl p-5 space-y-3">
+                <div className="soft-sheet rounded-3xl p-5 space-y-3">
                   <h3 className="font-semibold">{form.title || "Untitled Gig"}</h3>
                   <p className="text-sm text-muted-foreground line-clamp-2">{form.description || "No description"}</p>
                   <div className="flex flex-wrap gap-2">
@@ -205,14 +207,15 @@ export default function CreateGigPage() {
                   </div>
                 </div>
                 <div className="flex gap-3">
-                  <Button variant="outline" className="flex-1 border-white/10" onClick={() => setStep(2)}>Back</Button>
-                  <Button variant="glow" className="flex-1" onClick={handleSubmit} disabled={loading}>
+                  <Button variant="outline" className="flex-1" onClick={() => setStep(2)}>Back</Button>
+                  <Button className="flex-1" onClick={handleSubmit} disabled={loading}>
                     {loading ? "Publishing..." : "Publish Gig"}
                   </Button>
                 </div>
               </CardContent>
             </Card>
           )}
+          </div>
         </motion.div>
       </div>
     </div>

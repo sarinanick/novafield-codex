@@ -32,76 +32,56 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      <div className="absolute inset-0 aurora opacity-30" />
-      <div className="absolute inset-0 grid-bg" />
-      <FloatingOrb className="absolute top-1/4 left-[10%]" color="bg-primary/20" size="w-72 h-72" delay={0} />
-      <FloatingOrb className="absolute bottom-1/4 right-[10%]" color="bg-blue-500/15" size="w-96 h-96" delay={2} />
+    <main className="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="section-block block-lilac mb-6 lg:mb-0">
+          <div className="mono-eyebrow text-black/70">Welcome back</div>
+          <h1 className="mt-4 text-5xl font-light tracking-[-0.05em] sm:text-6xl">Sign in without the visual noise.</h1>
+          <p className="mt-5 max-w-xl text-lg leading-8 text-black/75">
+            The login screen now follows the same black-and-white core as the rest of the site.
+          </p>
+        </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 30, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.6 }}
-        className="relative z-10 w-full max-w-md mx-4"
-      >
-        <div className="glass-card rounded-3xl p-8">
-          <div className="text-center mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary via-blue-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary/25">
-              <Sparkles className="w-6 h-6 text-white" />
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="sheet p-8">
+          <div className="mb-8 text-center">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-black text-white">
+              <Sparkles className="h-6 w-6" />
             </div>
-            <h1 className="text-2xl font-bold">Welcome back</h1>
-            <p className="text-muted-foreground text-sm mt-1">Sign in to your NovaField account</p>
+            <h2 className="mt-4 text-2xl font-medium">Welcome back</h2>
+            <p className="mt-1 text-sm text-black/55">Sign in to your NovaField account</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm">
-                {error}
-              </motion.div>
-            )}
-
+            {error && <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
             <div className="space-y-2">
               <label className="text-sm font-medium">Email</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input type="email" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} className="pl-10" required />
+                <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-black/40" />
+                <Input type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-11" required />
               </div>
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-medium">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input type={showPass ? "text" : "password"} placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} className="pl-10 pr-10" required />
-                <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                  {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                <Lock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-black/40" />
+                <Input type={showPass ? "text" : "password"} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-11 pr-11" required />
+                <button type="button" onClick={() => setShowPass((v) => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-black/40">
+                  {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
 
-            <Button type="submit" variant="glow" className="w-full" size="lg" disabled={loading}>
-              {loading ? "Signing in..." : "Sign In"}
+            <Button type="submit" className="w-full" size="lg" disabled={loading}>
+              {loading ? "Signing in..." : "Sign in"}
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
-            <Link href="/auth/register" className="text-primary hover:underline font-medium">Sign up free</Link>
+          <div className="mt-6 text-center text-sm text-black/55">
+            Don&apos;t have an account? <Link href="/auth/register" className="font-medium text-black underline">Sign up free</Link>
           </div>
-        </div>
-      </motion.div>
-    </div>
-  );
-}
-
-function FloatingOrb({ className, color, size, delay }: { className: string; color: string; size: string; delay: number }) {
-  return (
-    <motion.div
-      animate={{ y: [-20, 20, -20] }}
-      transition={{ duration: 6 + delay, repeat: Infinity, ease: "easeInOut", delay }}
-      className={className}
-    >
-      <div className={`${size} ${color} rounded-full blur-[100px]`} />
-    </motion.div>
+        </motion.div>
+      </div>
+    </main>
   );
 }

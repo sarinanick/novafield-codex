@@ -46,11 +46,13 @@ export default function MarketplaceContent() {
   };
 
   return (
-    <div className="min-h-screen pt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen px-4 py-8 pt-24 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">Find AI <span className="text-gradient">Freelancers</span></h1>
-          <p className="text-muted-foreground mb-6">{total} services available</p>
+          <div className="section-block block-cream">
+          <div className="mono-eyebrow text-black/70">Marketplace</div>
+          <h1 className="mt-4 text-4xl font-light tracking-[-0.05em] md:text-5xl">Find AI freelancers without the dashboard glare.</h1>
+          <p className="mt-4 mb-6 text-black/70">{total} services available</p>
           <form onSubmit={(e) => { e.preventDefault(); setPage(1); loadGigs(); }} className="flex gap-3">
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -58,6 +60,7 @@ export default function MarketplaceContent() {
             </div>
             <Button type="submit" variant="glow" size="lg">Search</Button>
           </form>
+          </div>
         </motion.div>
 
         <div className="flex gap-8">

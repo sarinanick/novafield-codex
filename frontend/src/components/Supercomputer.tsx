@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { Cpu, Bot, Link2, Cloud, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AnimatedSection } from "./AnimatedSection";
 
 const capabilities = [
   { icon: Bot, label: "Agents", desc: "AI assistants" },
@@ -14,65 +13,35 @@ const capabilities = [
 
 export default function Supercomputer() {
   return (
-    <section className="py-24 lg:py-32 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <AnimatedSection>
-          <motion.div
-            whileHover={{ scale: 1.005 }}
-            transition={{ duration: 0.4 }}
-            className="glass-card rounded-3xl p-8 md:p-12 lg:p-16 relative overflow-hidden"
-          >
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px]" />
-            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px]" />
-
-            <div className="relative grid lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <motion.div
-                  initial={{ opacity: 0, x: -30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6 }}
-                >
-                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-card text-sm text-primary mb-6">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    New Feature
-                  </span>
-                  <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                    <span className="text-gradient">Supercomputer</span>
-                  </h2>
-                  <p className="text-lg text-muted-foreground mb-8 max-w-lg leading-relaxed">
-                    One superagent for your entire creative stack. Build workflows, deploy agents,
-                    connect APIs, and automate your creative pipeline.
-                  </p>
-                  <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                    <Button variant="glow" size="lg">
-                      Try Supercomputer
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </motion.div>
-                </motion.div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                {capabilities.map((cap, i) => (
-                  <motion.div
-                    key={cap.label}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
-                    whileHover={{ y: -4, scale: 1.05 }}
-                    className="glass-card rounded-xl p-5 text-center cursor-pointer group"
-                  >
-                    <cap.icon className="w-8 h-8 mx-auto mb-3 text-primary group-hover:scale-110 transition-transform duration-300" />
-                    <div className="font-semibold mb-1">{cap.label}</div>
-                    <div className="text-sm text-muted-foreground">{cap.desc}</div>
-                  </motion.div>
-                ))}
+    <section className="px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="section-block block-navy">
+          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+            <div>
+              <div className="mono-eyebrow text-white/70">Ship products</div>
+              <h2 className="mt-4 text-4xl font-light tracking-[-0.05em] text-white sm:text-5xl">A dark story block that feels like a proper pause.</h2>
+              <p className="mt-4 max-w-xl text-lg leading-8 text-white/75">
+                The navy panel gives the page contrast without returning to the old neon-glass language.
+              </p>
+              <div className="mt-8">
+                <Button size="lg" className="bg-white text-black hover:bg-white/90">
+                  Try the supercomputer
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
               </div>
             </div>
-          </motion.div>
-        </AnimatedSection>
+
+            <div className="grid grid-cols-2 gap-4">
+              {capabilities.map((cap) => (
+                <motion.div key={cap.label} whileHover={{ y: -4 }} className="rounded-3xl border border-white/10 bg-white/10 p-5 text-white backdrop-blur-sm">
+                  <cap.icon className="h-7 w-7" />
+                  <div className="mt-5 text-lg font-medium">{cap.label}</div>
+                  <div className="mt-1 text-sm text-white/70">{cap.desc}</div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

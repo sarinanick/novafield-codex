@@ -49,10 +49,10 @@ export default function GigDetailPage() {
   if (!gig) return <div className="min-h-screen pt-20 text-center py-20"><p className="text-xl text-muted-foreground">Gig not found</p></div>;
 
   return (
-    <div className="min-h-screen pt-20 pb-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen px-4 pb-16 pt-24 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
+        <div className="mono-eyebrow mb-6 text-black/55">
           <Link href="/marketplace" className="hover:text-foreground">Marketplace</Link>
           <ChevronRight className="w-3 h-3" />
           <Link href={`/marketplace?category=${gig.category}`} className="hover:text-foreground capitalize">{gig.category?.replace("ai-", "AI ")}</Link>
@@ -60,11 +60,12 @@ export default function GigDetailPage() {
           <span className="text-foreground truncate">{gig.title}</span>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid gap-8 lg:grid-cols-3">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-              <h1 className="text-3xl font-bold mb-4">{gig.title}</h1>
+              <div className="section-block block-cream mb-8">
+              <h1 className="text-4xl font-light tracking-[-0.05em] mb-4">{gig.title}</h1>
               <div className="flex items-center gap-4 mb-6">
                 <Link href={`/profile/${gig.freelancer?.id}`} className="flex items-center gap-3 hover:opacity-80 transition">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-blue-500 flex items-center justify-center font-bold">
@@ -81,23 +82,24 @@ export default function GigDetailPage() {
                   <span className="text-muted-foreground">({gig.reviewsCount || 0})</span>
                 </div>
               </div>
+              </div>
 
-              <div className="glass-card rounded-2xl overflow-hidden mb-8">
+              <div className="sheet overflow-hidden mb-8">
                 <div className={`aspect-video bg-gradient-to-br ${getGradient(gig.category)} flex items-center justify-center text-4xl font-bold opacity-80`}>
                   {gig.title}
                 </div>
               </div>
 
               <Tabs defaultValue="description">
-                <TabsList className="glass-card border border-white/10">
+              <TabsList>
                   <TabsTrigger value="description">Description</TabsTrigger>
                   <TabsTrigger value="about">About the Seller</TabsTrigger>
                   <TabsTrigger value="reviews">Reviews ({reviews.length})</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="description" className="mt-6">
-                  <div className="prose prose-invert max-w-none">
-                    <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">{gig.description}</p>
+                  <div className="prose max-w-none">
+                    <p className="leading-relaxed whitespace-pre-wrap text-black/70">{gig.description}</p>
                     {gig.aiTools?.length > 0 && (
                       <div className="mt-6">
                         <h3 className="text-lg font-semibold mb-3">AI Tools Used</h3>
@@ -133,15 +135,15 @@ export default function GigDetailPage() {
                         </div>
                       </div>
                       <div className="grid grid-cols-3 gap-4 mt-6">
-                        <div className="text-center p-3 rounded-xl glass-card">
+                          <div className="text-center p-3 rounded-2xl soft-sheet">
                           <div className="text-2xl font-bold">{gig.freelancer?.rating?.toFixed(1) || "New"}</div>
                           <div className="text-xs text-muted-foreground">Rating</div>
                         </div>
-                        <div className="text-center p-3 rounded-xl glass-card">
+                          <div className="text-center p-3 rounded-2xl soft-sheet">
                           <div className="text-2xl font-bold">{gig.freelancer?.reviewsCount || 0}</div>
                           <div className="text-xs text-muted-foreground">Reviews</div>
                         </div>
-                        <div className="text-center p-3 rounded-xl glass-card">
+                          <div className="text-center p-3 rounded-2xl soft-sheet">
                           <div className="text-2xl font-bold">{gig.ordersCount || 0}</div>
                           <div className="text-xs text-muted-foreground">Orders</div>
                         </div>
@@ -155,7 +157,7 @@ export default function GigDetailPage() {
                     {reviews.length === 0 ? (
                       <p className="text-muted-foreground text-center py-8">No reviews yet</p>
                     ) : reviews.map((r: any) => (
-                      <Card key={r.id} className="glass-card border-white/5">
+                      <Card key={r.id} className="sheet">
                         <CardContent className="p-5">
                           <div className="flex items-center gap-3 mb-3">
                             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-blue-500 flex items-center justify-center text-xs font-bold">
@@ -187,7 +189,7 @@ export default function GigDetailPage() {
                 <motion.div
                   key={pkg.id}
                   whileHover={{ scale: 1.01 }}
-                  className={`glass-card rounded-2xl p-6 cursor-pointer transition-all ${selectedPackage?.id === pkg.id ? "border-2 border-primary shadow-xl shadow-primary/10" : "border border-white/5"}`}
+                  className={`sheet rounded-3xl p-6 cursor-pointer transition-all ${selectedPackage?.id === pkg.id ? "border-2 border-black" : "border border-black/10"}`}
                   onClick={() => setSelectedPackage(pkg)}
                 >
                   <div className="flex justify-between items-start mb-3">
@@ -212,14 +214,14 @@ export default function GigDetailPage() {
                 </motion.div>
               ))}
 
-              <Button variant="glow" className="w-full" size="lg" onClick={handleOrder} disabled={ordering || !selectedPackage}>
+              <Button className="w-full" size="lg" onClick={handleOrder} disabled={ordering || !selectedPackage}>
                 <ShoppingCart className="w-4 h-4 mr-2" />
                 {ordering ? "Placing Order..." : `Continue ($${selectedPackage?.price || 0})`}
               </Button>
 
               {user && user.id !== gig.freelancer?.id && (
                 <Link href={`/messages?user=${gig.freelancer?.id}`}>
-                  <Button variant="outline" className="w-full border-white/10" size="lg">
+                  <Button variant="outline" className="w-full" size="lg">
                     <MessageSquare className="w-4 h-4 mr-2" />
                     Contact Seller
                   </Button>

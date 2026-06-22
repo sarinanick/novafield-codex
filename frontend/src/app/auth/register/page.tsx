@@ -34,81 +34,74 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      <div className="absolute inset-0 aurora opacity-30" />
-      <div className="absolute inset-0 grid-bg" />
+    <main className="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center lg:grid-cols-[1fr_0.95fr]">
+        <div className="section-block block-cream mb-6 lg:mb-0">
+          <div className="mono-eyebrow text-black/70">Create account</div>
+          <h1 className="mt-4 text-5xl font-light tracking-[-0.05em] sm:text-6xl">Start from a more composed surface.</h1>
+          <p className="mt-5 max-w-xl text-lg leading-8 text-black/75">
+            The signup page now matches the rest of the system instead of feeling like a separate app.
+          </p>
+        </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 30, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.6 }}
-        className="relative z-10 w-full max-w-md mx-4"
-      >
-        <div className="glass-card rounded-3xl p-8">
-          <div className="text-center mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary via-blue-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary/25">
-              <Sparkles className="w-6 h-6 text-white" />
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="sheet p-8">
+          <div className="mb-8 text-center">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-black text-white">
+              <Sparkles className="h-6 w-6" />
             </div>
-            <h1 className="text-2xl font-bold">Create your account</h1>
-            <p className="text-muted-foreground text-sm mt-1">Join the AI freelancer marketplace</p>
+            <h2 className="mt-4 text-2xl font-medium">Create your account</h2>
+            <p className="mt-1 text-sm text-black/55">Join the AI freelancer marketplace</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm">
-                {error}
-              </motion.div>
-            )}
+            {error && <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
 
-            <div className="grid grid-cols-2 gap-3 p-1 glass-card rounded-xl">
-              <button type="button" onClick={() => setRole("client")} className={`flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-medium transition-all ${role === "client" ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25" : "text-muted-foreground hover:text-foreground"}`}>
-                <Briefcase className="w-4 h-4" />
-                Hire Talent
+            <div className="grid grid-cols-2 gap-3 rounded-3xl border border-black/10 bg-white p-1">
+              <button type="button" onClick={() => setRole("client")} className={`flex items-center justify-center gap-2 rounded-full py-3 text-sm font-medium transition-all ${role === "client" ? "bg-black text-white" : "text-black/55 hover:bg-black/5"}`}>
+                <Briefcase className="h-4 w-4" /> Hire talent
               </button>
-              <button type="button" onClick={() => setRole("freelancer")} className={`flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-medium transition-all ${role === "freelancer" ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25" : "text-muted-foreground hover:text-foreground"}`}>
-                <Code className="w-4 h-4" />
-                Work as Freelancer
+              <button type="button" onClick={() => setRole("freelancer")} className={`flex items-center justify-center gap-2 rounded-full py-3 text-sm font-medium transition-all ${role === "freelancer" ? "bg-black text-white" : "text-black/55 hover:bg-black/5"}`}>
+                <Code className="h-4 w-4" /> Work as freelancer
               </button>
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-medium">Full Name</label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input placeholder="John Doe" value={name} onChange={e => setName(e.target.value)} className="pl-10" required />
+                <User className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-black/40" />
+                <Input placeholder="John Doe" value={name} onChange={(e) => setName(e.target.value)} className="pl-11" required />
               </div>
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-medium">Email</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input type="email" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} className="pl-10" required />
+                <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-black/40" />
+                <Input type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-11" required />
               </div>
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-medium">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input type={showPass ? "text" : "password"} placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} className="pl-10 pr-10" required minLength={6} />
-                <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                  {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                <Lock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-black/40" />
+                <Input type={showPass ? "text" : "password"} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-11 pr-11" required minLength={6} />
+                <button type="button" onClick={() => setShowPass((v) => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-black/40">
+                  {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
 
-            <Button type="submit" variant="glow" className="w-full" size="lg" disabled={loading}>
-              {loading ? "Creating account..." : "Create Account"}
+            <Button type="submit" className="w-full" size="lg" disabled={loading}>
+              {loading ? "Creating account..." : "Create account"}
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            Already have an account?{" "}
-            <Link href="/auth/login" className="text-primary hover:underline font-medium">Sign in</Link>
+          <div className="mt-6 text-center text-sm text-black/55">
+            Already have an account? <Link href="/auth/login" className="font-medium text-black underline">Sign in</Link>
           </div>
-        </div>
-      </motion.div>
-    </div>
+        </motion.div>
+      </div>
+    </main>
   );
 }

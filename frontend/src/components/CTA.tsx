@@ -3,46 +3,25 @@
 import { motion } from "framer-motion";
 import { Zap, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AnimatedSection } from "./AnimatedSection";
 
 export default function CTA() {
   return (
-    <section className="py-24 lg:py-32 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <AnimatedSection>
-          <motion.div
-            whileHover={{ scale: 1.01 }}
-            className="relative overflow-hidden rounded-3xl"
-          >
-            <div className="absolute inset-0 aurora opacity-60" />
-            <div className="absolute inset-0 grid-bg" />
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-blue-500/10" />
-
-            <div className="relative text-center py-20 px-8">
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7 }}
-              >
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-                  Ready to create?
-                </h2>
-                <p className="text-xl text-muted-foreground mb-10 max-w-lg mx-auto">
-                  Join 500,000+ creators already using NovaField to bring their ideas to life.
-                </p>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button variant="glow" size="xl">
-                    <Zap className="w-5 h-5 mr-2" />
-                    Start Creating Free
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </Button>
-                </motion.div>
-                <p className="text-sm text-muted-foreground mt-6">No credit card required</p>
-              </motion.div>
-            </div>
+    <section className="px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="section-block block-pink text-center">
+          <div className="mono-eyebrow text-black/70">Final note</div>
+          <h2 className="mt-4 text-4xl font-light tracking-[-0.05em] sm:text-5xl">Ready for a cleaner deployment story?</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-black/75">
+            The site now reads with a much stronger visual system, so the product can feel deliberate instead of assembled.
+          </p>
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="mt-8 inline-flex">
+            <Button size="xl">
+              <Zap className="mr-2 h-4 w-4" />
+              Start creating free
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
           </motion.div>
-        </AnimatedSection>
+        </div>
       </div>
     </section>
   );

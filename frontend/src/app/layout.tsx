@@ -11,14 +11,14 @@ import ShortcutsHelp from "@/components/shortcuts-help";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "NovaField AI - Marketplace for AI Freelancers",
-  description: "Connect with expert AI freelancers. Video generation, image creation, chatbots, and more.",
+  title: "NovaField",
+  description: "A creative marketplace for AI freelancers and tools.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans antialiased bg-background text-foreground`}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.variable} font-sans antialiased bg-white text-black`}>
         <ThemeProvider>
           <AuthProvider>
             <ShortcutsProvider>
