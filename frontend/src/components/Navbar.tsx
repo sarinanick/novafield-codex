@@ -152,7 +152,13 @@ export default function Navbar() {
             )}
           </div>
 
-          <button className="md:hidden p-2 rounded-full hover:bg-surface-soft" onClick={() => setMobileOpen(!mobileOpen)}>
+          <button
+            className="md:hidden p-2 rounded-full hover:bg-surface-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          >
             {mobileOpen ? <X className="w-5 h-5 text-ink" /> : <Menu className="w-5 h-5 text-ink" />}
           </button>
         </div>
@@ -160,27 +166,80 @@ export default function Navbar() {
 
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="md:hidden bg-canvas border-t border-hairline">
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-canvas border-t border-hairline"
+            id="mobile-menu"
+            role="navigation"
+            aria-label="Mobile navigation"
+          >
             <div className="px-4 py-4 space-y-1">
               {navLinks.map(l => (
-                <Link key={l.href} href={l.href} className="block px-4 py-3 text-body-sm text-ink hover:bg-surface-soft rounded-md" onClick={() => setMobileOpen(false)}>
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className="block px-4 py-3 text-body-sm text-ink hover:bg-surface-soft rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  onClick={() => setMobileOpen(false)}
+                  aria-current={pathname.startsWith(l.href) ? "page" : undefined}
+                >
                   {l.label}
                 </Link>
               ))}
               {user ? (
                 <>
-                  <Link href="/messages" className="block px-4 py-3 text-body-sm text-ink hover:bg-surface-soft rounded-md" onClick={() => setMobileOpen(false)}>Messages {unread > 0 && `(${unread})`}</Link>
-                  <Link href="/meetings" className="block px-4 py-3 text-body-sm text-ink hover:bg-surface-soft rounded-md" onClick={() => setMobileOpen(false)}>Meetings</Link>
-                  <Link href="/orders" className="block px-4 py-3 text-body-sm text-ink hover:bg-surface-soft rounded-md" onClick={() => setMobileOpen(false)}>Orders</Link>
+                  <Link
+                    href="/messages"
+                    className="block px-4 py-3 text-body-sm text-ink hover:bg-surface-soft rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Messages {unread > 0 && `(${unread})`}
+                  </Link>
+                  <Link
+                    href="/meetings"
+                    className="block px-4 py-3 text-body-sm text-ink hover:bg-surface-soft rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Meetings
+                  </Link>
+                  <Link
+                    href="/orders"
+                    className="block px-4 py-3 text-body-sm text-ink hover:bg-surface-soft rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Orders
+                  </Link>
                   {user.role === "admin" && (
-                    <Link href="/admin" className="block px-4 py-3 text-body-sm text-ink hover:bg-surface-soft rounded-md" onClick={() => setMobileOpen(false)}>Admin</Link>
+                    <Link
+                      href="/admin"
+                      className="block px-4 py-3 text-body-sm text-ink hover:bg-surface-soft rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      Admin
+                    </Link>
                   )}
-                  <button onClick={() => { logout(); setMobileOpen(false); }} className="w-full text-left px-4 py-3 text-body-sm text-destructive hover:bg-surface-soft rounded-md">Sign Out</button>
+                  <button
+                    onClick={() => { logout(); setMobileOpen(false); }}
+                    className="w-full text-left px-4 py-3 text-body-sm text-destructive hover:bg-surface-soft rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    Sign Out
+                  </button>
                 </>
               ) : (
                 <div className="pt-2 space-y-2">
-                  <Link href="/auth/login" className="block btn-secondary text-body-sm text-center">Sign In</Link>
-                  <Link href="/auth/register" className="block btn-primary text-body-sm text-center">Get Started Free</Link>
+                  <Link
+                    href="/auth/login"
+                    className="block btn-secondary text-body-sm text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/auth/register"
+                    className="block btn-primary text-body-sm text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    Get Started Free
+                  </Link>
                 </div>
               )}
             </div>

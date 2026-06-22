@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const stats = [
   { value: "4.5M+", label: "Videos Generated" },
@@ -13,7 +14,7 @@ const stats = [
 
 export default function Hero() {
   return (
-    <section className="relative bg-canvas overflow-hidden">
+    <section className="relative bg-canvas overflow-hidden" aria-labelledby="hero-heading">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8 pt-24 pb-16">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -26,11 +27,13 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
+            aria-hidden="true"
           >
             AI-POWERED CREATIVE PLATFORM
           </motion.p>
 
           <motion.h1
+            id="hero-heading"
             className="text-display-xl text-ink mb-8"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -56,14 +59,20 @@ export default function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.7 }}
+            role="group"
+            aria-label="Call to action buttons"
           >
-            <Link href="/auth/register" className="btn-primary text-body px-6 py-3">
-              Start Creating Free
-              <ArrowRight className="w-4 h-4 ml-2 inline" />
-            </Link>
-            <Link href="#features" className="btn-secondary text-body px-6 py-3">
-              See How It Works
-            </Link>
+            <Button asChild size="lg">
+              <Link href="/auth/register">
+                Start Creating Free
+                <ArrowRight className="w-4 h-4 ml-2" aria-hidden="true" />
+              </Link>
+            </Button>
+            <Button asChild variant="secondary" size="lg">
+              <Link href="#features">
+                See How It Works
+              </Link>
+            </Button>
           </motion.div>
 
           <motion.div
@@ -71,6 +80,8 @@ export default function Hero() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.7 }}
+            role="list"
+            aria-label="Platform statistics"
           >
             {stats.map((stat, i) => (
               <motion.div
@@ -79,8 +90,13 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 + i * 0.1 }}
+                role="listitem"
               >
-                <div className="text-display-lg text-ink mb-1" style={{ fontSize: "clamp(28px, 3.5vw, 40px)", fontWeight: 540 }}>
+                <div
+                  className="text-display-lg text-ink mb-1"
+                  style={{ fontSize: "clamp(28px, 3.5vw, 40px)", fontWeight: 540 }}
+                  aria-label={`${stat.value} ${stat.label}`}
+                >
                   {stat.value}
                 </div>
                 <div className="text-caption text-muted-foreground">{stat.label}</div>
