@@ -1,7 +1,4 @@
-"use client";
-
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
@@ -13,12 +10,12 @@ export default function NotFound() {
           The page you&apos;re looking for doesn&apos;t exist or has been moved.
         </p>
         <div className="flex gap-3 justify-center">
-          <Button asChild variant="secondary">
-            <Link href="/">Go Home</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/marketplace">Browse Marketplace</Link>
-          </Button>
+          <Link href="/" className="btn-secondary text-body-sm px-6 py-3">
+            Go Home
+          </Link>
+          <Link href="/marketplace" className="btn-primary text-body-sm px-6 py-3">
+            Browse Marketplace
+          </Link>
         </div>
       </div>
     </div>
