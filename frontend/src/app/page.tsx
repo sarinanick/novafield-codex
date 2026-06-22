@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { SkipLink } from "@/components/SkipLink";
 
 const Navbar = dynamic(() => import("@/components/Navbar"), { ssr: false });
 const Hero = dynamic(() => import("@/components/Hero"), { ssr: false });
@@ -15,17 +16,20 @@ const Footer = dynamic(() => import("@/components/Footer"), { ssr: false });
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-canvas">
-      <Navbar />
-      <Hero />
-      <Marquee />
-      <Features />
-      <Models />
-      <Gallery />
-      <Supercomputer />
-      <Pricing />
-      <CTA />
-      <Footer />
-    </main>
+    <>
+      <SkipLink />
+      <main id="main-content" className="min-h-screen bg-canvas">
+        <Navbar />
+        <Hero />
+        <Marquee />
+        <Features />
+        <Models />
+        <Gallery />
+        <Supercomputer />
+        <Pricing />
+        <CTA />
+        <Footer />
+      </main>
+    </>
   );
 }
