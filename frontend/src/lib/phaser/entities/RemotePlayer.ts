@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import * as Phaser from "phaser";
 import { RemotePlayerData } from "../config";
 
 const PLAYER_RADIUS = 14;

@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import * as Phaser from "phaser";
 import { WORLD_WIDTH, WORLD_HEIGHT } from "../config";
 
 const MIN_ZOOM = 0.5;
