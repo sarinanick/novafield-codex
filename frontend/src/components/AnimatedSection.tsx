@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView, useAnimation, Variants } from "framer-motion";
-import { useRef, ReactNode } from "react";
+import { useEffect, useRef, ReactNode } from "react";
 
 interface AnimatedSectionProps {
   children: ReactNode;
@@ -32,9 +32,11 @@ export function AnimatedSection({
   const isInView = useInView(ref, { once, margin: "-80px" });
   const controls = useAnimation();
 
-  if (isInView) {
-    controls.start("visible");
-  }
+  useEffect(() => {
+    if (isInView) {
+      controls.start("visible");
+    }
+  }, [isInView, controls]);
 
   const variants: Variants = {
     hidden: {
