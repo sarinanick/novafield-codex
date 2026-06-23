@@ -1,0 +1,36 @@
+---
+title: "Angular HTTP"
+category: "Data Fetching UI"
+format: "SKILL.md"
+stack: "Angular HttpClient, interceptors, error handling"
+source: "https://github.com/analogjs/angular-skills"
+install: "npx skills add analogjs/angular-skills --skill angular-http"
+---
+
+# Angular HTTP
+
+## What this is
+A frontend/UI-focused Markdown-style agent instruction source or rule reference. This entry is a curated pointer and usage card, not a copied mirror of the original file.
+
+## Best for
+Use for UI data fetching, loading states, error states, and HTTP integration in Angular.
+
+## Stack / keywords
+Angular HttpClient, interceptors, error handling
+
+## Source
+https://github.com/analogjs/angular-skills
+
+## Install or use
+```bash
+npx skills add analogjs/angular-skills --skill angular-http
+```
+
+## Prompt to give your coding agent
+```text
+Use `Angular HTTP` as the frontend/UI guidance for this task. Follow its conventions for component structure, styling, accessibility, responsive behavior, and design consistency. Prefer reusable components, semantic markup, clear loading/error/empty states, and production-ready UI polish.
+```
+
+## Notes
+- Review the source before installing third-party agent skills or rules.
+- Keep this file as a shortcut index in your project docs, then install or copy the actual rule/skill from the linked source when needed.

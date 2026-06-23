@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { useToast } from "@/components/toast";
 
 const ROOMS = [
   { id: "conf-1", name: "Conference Room A", icon: "🏢", color: "#a855f7" },
@@ -52,6 +53,7 @@ function FloatingOrb({ delay, x, y, size, color }: { delay: number; x: string; y
 export default function MeetingsContent() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const { addToast } = useToast();
   const [meetings, setMeetings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -87,7 +89,7 @@ export default function MeetingsContent() {
       if (editingMeeting) await api.updateMeeting(editingMeeting.id, formData);
       else await api.createMeeting(formData);
       setShowForm(false); setEditingMeeting(null); resetForm(); loadMeetings();
-    } catch (err: any) { alert(err.message); }
+    } catch (err: any) { addToast("error", "Meeting Failed", err.message); }
     setActionLoading(null);
   };
 
@@ -106,7 +108,7 @@ export default function MeetingsContent() {
   const handleDelete = async (id: string) => {
     if (!confirm("Cancel this meeting?")) return;
     setActionLoading(id);
-    try { await api.deleteMeeting(id); loadMeetings(); } catch (err: any) { alert(err.message); }
+    try { await api.deleteMeeting(id); loadMeetings(); addToast("success", "Meeting Cancelled"); } catch (err: any) { addToast("error", "Delete Failed", err.message); }
     setActionLoading(null);
   };
 
@@ -116,7 +118,7 @@ export default function MeetingsContent() {
       const result = await api.joinMeeting(id);
       if (result.roomId) router.push(`/world?room=${result.roomId}`);
       loadMeetings();
-    } catch (err: any) { alert(err.message); }
+    } catch (err: any) { addToast("error", "Join Failed", err.message); }
     setActionLoading(null);
   };
 

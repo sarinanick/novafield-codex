@@ -11,7 +11,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=builder --chown=appuser:appgroup /app/.next/standalone ./
 COPY --from=builder --chown=appuser:appgroup /app/.next/static ./.next/static
-COPY --from=builder --chown=appuser:appgroup /app/public ./public
+RUN if [ -d /app/public ]; then cp -r /app/public ./public; fi || true
 USER appuser
 EXPOSE 3000
 CMD ["node", "server.js"]

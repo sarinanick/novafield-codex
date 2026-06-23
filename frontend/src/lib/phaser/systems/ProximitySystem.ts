@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import * as Phaser from "phaser";
 import { PROXIMITY_RANGE, RemotePlayerData } from "../config";
 
 export interface ProximityCallbacks {

@@ -1,9 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Check, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { Check } from "lucide-react";
 import { AnimatedSection, StaggerContainer, StaggerItem } from "./AnimatedSection";
+import { Button } from "@/components/ui/button";
 
 const plans = [
   {
@@ -13,16 +13,16 @@ const plans = [
     features: ["10 generations/month", "Basic AI models", "720p output", "Community support", "1 project"],
     popular: false,
     cta: "Get Started",
-    variant: "outline" as const,
+    href: "/auth/register",
   },
   {
-    name: "Pro",
+    name: "Professional",
     price: "$20",
     period: "per month",
     features: ["500 generations/month", "All 30+ AI models", "4K output", "Priority support", "Unlimited projects", "Custom characters", "API access", "Commercial license"],
     popular: true,
     cta: "Upgrade to Pro",
-    variant: "glow" as const,
+    href: "/auth/register",
   },
   {
     name: "Enterprise",
@@ -31,76 +31,103 @@ const plans = [
     features: ["Unlimited generations", "Custom model training", "Dedicated account manager", "SLA guarantee", "On-premise deployment", "White-label options", "SSO & SAML", "Priority queue"],
     popular: false,
     cta: "Contact Sales",
-    variant: "outline" as const,
+    href: "/contact",
   },
 ];
 
 export default function Pricing() {
+  const [annual, setAnnual] = useState(false);
+
   return (
-    <section id="pricing" className="py-24 lg:py-32 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="pricing" className="bg-canvas py-section" aria-labelledby="pricing-heading">
+      <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
         <AnimatedSection className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            Simple, transparent <span className="text-gradient">pricing</span>
+          <p className="text-eyebrow text-muted-foreground mb-4" aria-hidden="true">PRICING</p>
+          <h2 id="pricing-heading" className="text-display-lg text-ink mb-6">
+            Simple, transparent pricing
           </h2>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+          <p className="text-body-lg text-muted-foreground max-w-xl mx-auto mb-8">
             Start free, upgrade when you need more. No hidden fees.
           </p>
+
+          <div
+            className="inline-flex items-center gap-1 bg-surface-soft rounded-pill p-1"
+            role="group"
+            aria-label="Billing period selection"
+          >
+            <button
+              onClick={() => setAnnual(false)}
+              className={`px-5 py-2 rounded-pill text-body-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                !annual ? "bg-primary text-primary-foreground" : "text-ink hover:bg-canvas"
+              }`}
+              aria-pressed={!annual}
+            >
+              Monthly
+            </button>
+            <button
+              onClick={() => setAnnual(true)}
+              className={`px-5 py-2 rounded-pill text-body-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                annual ? "bg-primary text-primary-foreground" : "text-ink hover:bg-canvas"
+              }`}
+              aria-pressed={annual}
+            >
+              Annual
+            </button>
+          </div>
         </AnimatedSection>
 
-        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto" staggerDelay={0.15}>
+        <StaggerContainer
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"
+          staggerDelay={0.15}
+          role="list"
+          aria-label="Pricing plans"
+        >
           {plans.map((plan) => (
-            <StaggerItem key={plan.name}>
-              <motion.div
-                whileHover={{ y: -8 }}
-                transition={{ duration: 0.3 }}
-                className={`relative rounded-2xl p-8 h-full flex flex-col ${
+            <StaggerItem key={plan.name} role="listitem">
+              <article
+                className={`relative bg-canvas rounded-lg p-8 h-full flex flex-col ${
                   plan.popular
-                    ? "glass-card border-2 border-primary/50 shadow-xl shadow-primary/10"
-                    : "glass-card"
+                    ? "border-2 border-primary shadow-lg"
+                    : "border border-hairline"
                 }`}
+                aria-labelledby={`plan-${plan.name}`}
               >
                 {plan.popular && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="absolute -top-4 left-1/2 -translate-x-1/2"
-                  >
-                    <span className="bg-gradient-to-r from-primary to-blue-500 px-4 py-1.5 rounded-full text-sm font-medium shadow-lg shadow-primary/25">
-                      Most Popular
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="bg-primary text-primary-foreground px-4 py-1 rounded-pill text-caption">
+                      MOST POPULAR
                     </span>
-                  </motion.div>
+                  </div>
                 )}
 
                 <div className="mb-6">
-                  <h3 className="text-xl font-semibold mb-2">{plan.name}</h3>
+                  <h3 id={`plan-${plan.name}`} className="text-card-title text-ink mb-2">{plan.name}</h3>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold">{plan.price}</span>
+                    <span className="text-display-lg text-ink" style={{ fontSize: 40, fontWeight: 540 }}>{plan.price}</span>
                     {plan.price !== "Custom" && (
-                      <span className="text-muted-foreground text-sm">/month</span>
+                      <span className="text-body-sm text-muted-foreground">/month</span>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">{plan.period}</p>
+                  <p className="text-body-sm text-muted-foreground mt-1">{plan.period}</p>
                 </div>
 
-                <ul className="space-y-3 mb-8 flex-1">
+                <ul className="space-y-3 mb-8 flex-1" role="list" aria-label={`${plan.name} plan features`}>
                   {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-3 text-sm">
-                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                        <Check className="w-3 h-3 text-primary" />
-                      </div>
+                    <li key={feature} className="flex items-center gap-3 text-body-sm">
+                      <Check className="w-4 h-4 text-semantic-success shrink-0" aria-hidden="true" />
                       <span className="text-muted-foreground">{feature}</span>
                     </li>
                   ))}
                 </ul>
 
-                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                  <Button variant={plan.variant} className="w-full" size="lg">
-                    {plan.cta}
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </motion.div>
-              </motion.div>
+                <Button
+                  asChild
+                  variant={plan.popular ? "default" : "secondary"}
+                  className="w-full"
+                >
+                  <a href={plan.href}>{plan.cta}</a>
+                </Button>
+              </article>
             </StaggerItem>
           ))}
         </StaggerContainer>
