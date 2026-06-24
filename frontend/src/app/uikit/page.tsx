@@ -63,7 +63,7 @@ export default function UIKitPage() {
               <h3 className="text-card-title text-ink mb-4">رنگ‌ها</h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
                 {[
-                  { name: "کanvas", class: "bg-canvas", text: "text-ink" },
+                  { name: "زمینه", class: "bg-canvas", text: "text-ink" },
                   { name: "سطح", class: "bg-surface-soft", text: "text-ink" },
                   { name: "مرکب", class: "bg-ink", text: "text-surface-soft" },
                   { name: "خط", class: "bg-hairline", text: "text-ink" },
