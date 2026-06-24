@@ -1,4 +1,4 @@
-import { Search, CreditCard, Clock, Users } from "lucide-react";
+import { Search, ClipboardList, Clock, Users } from "lucide-react";
 
 const trustFeatures = [
   {
@@ -7,9 +7,9 @@ const trustFeatures = [
     description: "Every service page shows clear details so you can make informed decisions.",
   },
   {
-    icon: CreditCard,
+    icon: ClipboardList,
     title: "Clear project workflow",
-    description: "Transparent pricing, order tracking, and delivery milestones from start to finish.",
+    description: "Transparent service details, order tracking, and delivery milestones.",
   },
   {
     icon: Clock,

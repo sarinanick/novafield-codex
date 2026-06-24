@@ -6,8 +6,8 @@ import { Search, Shield, CreditCard, Package, UserPlus, FileText, DollarSign, Tr
 const clientSteps = [
   { icon: Search, title: "Browse AI services", description: "Explore categories and find freelancers with the skills you need." },
   { icon: Shield, title: "Compare freelancers", description: "Review ratings, portfolios, delivery times, and pricing." },
-  { icon: CreditCard, title: "Order securely", description: "Place your order with clear pricing and delivery timelines." },
-  { icon: Package, title: "Receive final work", description: "Get your completed project with revision support." },
+  { icon: CreditCard, title: "Start your order", description: "Start with clear pricing, scope, and delivery expectations." },
+  { icon: Package, title: "Receive completed work", description: "Track delivery and receive the completed project from your freelancer." },
 ];
 
 const freelancerSteps = [

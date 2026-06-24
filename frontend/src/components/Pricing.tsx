@@ -18,7 +18,7 @@ const plans = [
     name: "For freelancers",
     items: [
       "Create profile free",
-      "List unlimited services",
+      "Create and publish services",
       "Set your own pricing",
       "Manage orders",
     ],
@@ -51,7 +51,7 @@ export default function Pricing() {
             Simple marketplace pricing
           </h2>
           <p className="text-body-lg text-muted-foreground max-w-xl mx-auto">
-            No subscriptions, no hidden fees. Pay per project or sell your services.
+            Browse services, compare offers, and pay per project when you're ready.
           </p>
         </div>
 
