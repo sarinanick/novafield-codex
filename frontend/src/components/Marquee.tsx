@@ -1,27 +1,34 @@
 "use client";
 
-const logos = [
-  "OpenAI", "Google", "Meta", "Runway", "Stability AI", "Midjourney",
-  "Anthropic", "Replicate", "Hugging Face", "Adobe", "Canva", "Figma",
+const tools = [
+  "OpenAI", "Midjourney", "Runway", "Claude", "Zapier",
+  "Figma", "Canva", "ElevenLabs", "Sora", "DALL-E",
+  "Stable Diffusion", "Replicate",
 ];
 
 export default function Marquee() {
   return (
-    <div
-      className="bg-inverse-canvas text-inverse-ink overflow-hidden"
-      style={{ height: 36 }}
-      role="marquee"
-      aria-label="Partner logos"
-      aria-live="off"
-    >
-      <div className="flex items-center h-full animate-marquee whitespace-nowrap">
-        {[...logos, ...logos].map((logo, i) => (
-          <span key={i} className="text-body-sm mx-8 opacity-60" aria-hidden="true">
-            {logo}
-          </span>
-        ))}
+    <div className="bg-surface-soft border-y border-hairline py-4 overflow-hidden">
+      <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
+        <p className="text-caption text-muted-foreground text-center mb-4">
+          Popular AI tools used by freelancers on NovaField
+        </p>
+        <div
+          className="flex items-center justify-center flex-wrap gap-2"
+          role="list"
+          aria-label="AI tools used by freelancers"
+        >
+          {tools.map((tool) => (
+            <span
+              key={tool}
+              className="px-3 py-1.5 text-body-sm text-muted-foreground bg-canvas border border-hairline rounded-full"
+              role="listitem"
+            >
+              {tool}
+            </span>
+          ))}
+        </div>
       </div>
-      <span className="sr-only">Our partners include OpenAI, Google, Meta, Runway, Stability AI, Midjourney, Anthropic, Replicate, Hugging Face, Adobe, Canva, and Figma</span>
     </div>
   );
 }

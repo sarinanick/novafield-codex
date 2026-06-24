@@ -7,11 +7,9 @@ const Navbar = dynamic(() => import("@/components/Navbar"), { ssr: false });
 const Hero = dynamic(() => import("@/components/Hero"), { ssr: false });
 const Marquee = dynamic(() => import("@/components/Marquee"), { ssr: false });
 const Features = dynamic(() => import("@/components/Features"), { ssr: false });
+const FeaturedServices = dynamic(() => import("@/components/FeaturedServices"), { ssr: false });
 const HowItWorks = dynamic(() => import("@/components/HowItWorks"), { ssr: false });
-const Models = dynamic(() => import("@/components/Models"), { ssr: false });
-const Gallery = dynamic(() => import("@/components/Gallery"), { ssr: false });
-const Supercomputer = dynamic(() => import("@/components/Supercomputer"), { ssr: false });
-const Testimonials = dynamic(() => import("@/components/Testimonials"), { ssr: false });
+const Trust = dynamic(() => import("@/components/Trust"), { ssr: false });
 const Pricing = dynamic(() => import("@/components/Pricing"), { ssr: false });
 const CTA = dynamic(() => import("@/components/CTA"), { ssr: false });
 const Footer = dynamic(() => import("@/components/Footer"), { ssr: false });
@@ -25,11 +23,9 @@ export default function Home() {
         <Hero />
         <Marquee />
         <Features />
+        <FeaturedServices />
         <HowItWorks />
-        <Models />
-        <Gallery />
-        <Supercomputer />
-        <Testimonials />
+        <Trust />
         <Pricing />
         <CTA />
         <Footer />
