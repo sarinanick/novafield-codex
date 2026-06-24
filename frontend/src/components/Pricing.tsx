@@ -1,5 +1,3 @@
-"use client";
-
 import { Check } from "lucide-react";
 import Link from "next/link";
 
@@ -9,9 +7,8 @@ const plans = [
     items: [
       "Browse services free",
       "Pay per project",
-      "Secure order workflow",
+      "Clear project workflow",
       "Compare freelancers",
-      "Revision support",
     ],
     cta: "Browse services",
     href: "/marketplace",
@@ -24,7 +21,6 @@ const plans = [
       "List unlimited services",
       "Set your own pricing",
       "Manage orders",
-      "Grow your reputation",
     ],
     cta: "Start selling",
     href: "/auth/register?role=freelancer",
@@ -33,11 +29,11 @@ const plans = [
   {
     name: "Platform",
     items: [
-      "Transparent service fee",
-      "Shown before checkout",
-      "Secure payment processing",
-      "Dispute resolution",
-      "Optional Pro tools later",
+      "Transparent service fee model",
+      "Clear project workflow",
+      "Client and freelancer dashboards",
+      "Messaging and order tracking",
+      "Pro tools planned later",
     ],
     cta: "Learn more",
     href: "/#how-it-works",

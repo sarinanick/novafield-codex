@@ -1,14 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Mail, Lock, User, Eye, EyeOff, Briefcase, Code, ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth-context";
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function RegisterPage() {
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -20,6 +23,13 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    const param = searchParams.get("role");
+    if (param === "freelancer" || param === "client") {
+      setRole(param);
+    }
+  }, [searchParams]);
 
   const passwordValid = password.length >= 6;
   const passwordStrong = password.length >= 8;
@@ -33,7 +43,7 @@ export default function RegisterPage() {
       setError("Please enter your name");
       return;
     }
-    if (!email.includes("@")) {
+    if (!emailRegex.test(email)) {
       setError("Please enter a valid email address");
       return;
     }
@@ -142,7 +152,7 @@ export default function RegisterPage() {
                   )}
                   <Briefcase className="w-6 h-6 text-ink" />
                   <div>
-                    <p className="text-body-sm font-semibold text-ink">I want to hire AI talent</p>
+                    <p className="text-body-sm font-semibold text-ink">Hire AI talent</p>
                     <p className="text-caption text-muted-foreground mt-1">
                       Find freelancers for AI videos, images, chatbots, automations, and creative work.
                     </p>
@@ -166,9 +176,9 @@ export default function RegisterPage() {
                   )}
                   <Code className="w-6 h-6 text-ink" />
                   <div>
-                    <p className="text-body-sm font-semibold text-ink">I want to sell AI services</p>
+                    <p className="text-body-sm font-semibold text-ink">Sell AI services</p>
                     <p className="text-caption text-muted-foreground mt-1">
-                      Create a profile, publish AI gigs, and get discovered by clients.
+                      Publish AI gigs, get discovered, and receive client orders.
                     </p>
                   </div>
                 </button>
@@ -178,8 +188,8 @@ export default function RegisterPage() {
             {/* Role-specific note */}
             <p className="text-caption text-muted-foreground text-center px-4">
               {role === "client"
-                ? "After signup, you'll go to the marketplace to browse services and compare freelancers."
-                : "After signup, you'll start by creating your first AI service."}
+                ? "After signup, you'll browse services and compare freelancers."
+                : "After signup, you'll create your first AI service."}
             </p>
 
             <div className="space-y-2">
@@ -222,7 +232,7 @@ export default function RegisterPage() {
                 <Input
                   id="password"
                   type={showPass ? "text" : "password"}
-                  placeholder="At least 6 characters"
+                  placeholder="Minimum 6 characters"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   className="pl-10 pr-10"
@@ -242,7 +252,7 @@ export default function RegisterPage() {
               {password.length > 0 && (
                 <div className="flex gap-2 text-caption">
                   <span className={passwordValid ? "text-semantic-success" : "text-muted-foreground"}>
-                    {passwordValid ? "✓" : "○"} 6+ characters
+                    {passwordValid ? "✓" : "○"} 6+ required
                   </span>
                   <span className={passwordStrong ? "text-semantic-success" : "text-muted-foreground"}>
                     {passwordStrong ? "✓" : "○"} 8+ recommended

@@ -1,5 +1,3 @@
-"use client";
-
 const footerLinks = {
   Product: [
     { label: "Marketplace", href: "/marketplace" },
@@ -9,11 +7,6 @@ const footerLinks = {
   Account: [
     { label: "Sign in", href: "/auth/login" },
     { label: "Create account", href: "/auth/register" },
-    { label: "Dashboard", href: "/dashboard" },
-  ],
-  Company: [
-    { label: "About", href: "/" },
-    { label: "Contact", href: "/" },
   ],
 };
 
@@ -21,8 +14,8 @@ export default function Footer() {
   return (
     <footer className="bg-canvas border-t border-hairline" role="contentinfo">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-section">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
-          <div className="col-span-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-12 mb-16">
+          <div>
             <div className="mb-4">
               <span className="text-xl font-bold text-ink">NovaField</span>
             </div>

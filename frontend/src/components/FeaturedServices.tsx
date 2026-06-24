@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { Star, Clock } from "lucide-react";
 
@@ -98,10 +96,12 @@ export default function FeaturedServices() {
           aria-label="Featured AI services"
         >
           {featuredServices.map((service) => (
-            <article
+            <Link
               key={service.title}
-              className="bg-surface-soft border border-hairline rounded-lg p-6 hover:shadow-md transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              href="/marketplace"
+              className="group bg-surface-soft border border-hairline rounded-lg p-6 hover:shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               role="listitem"
+              aria-label={`View ${service.title} services`}
             >
               <div className="flex items-center gap-3 mb-4">
                 <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${service.gradient} flex items-center justify-center text-xs font-bold text-white`}>
@@ -131,7 +131,7 @@ export default function FeaturedServices() {
                   {service.delivery}
                 </span>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
 

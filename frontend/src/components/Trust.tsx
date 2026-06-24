@@ -1,17 +1,15 @@
-"use client";
-
-import { Shield, CreditCard, Clock, Users } from "lucide-react";
+import { Search, CreditCard, Clock, Users } from "lucide-react";
 
 const trustFeatures = [
   {
-    icon: Shield,
-    title: "Verified freelancer profiles",
-    description: "Every freelancer has a public portfolio, ratings, and review history you can trust.",
+    icon: Search,
+    title: "Compare price, rating, and delivery time",
+    description: "Every service page shows clear details so you can make informed decisions.",
   },
   {
     icon: CreditCard,
-    title: "Secure project workflow",
-    description: "Clear pricing, order tracking, and project milestones from start to finish.",
+    title: "Clear project workflow",
+    description: "Transparent pricing, order tracking, and delivery milestones from start to finish.",
   },
   {
     icon: Clock,
@@ -30,7 +28,7 @@ export default function Trust() {
     <section className="bg-surface-soft py-section" aria-labelledby="trust-heading">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
         <div className="text-center mb-16">
-          <p className="text-eyebrow text-muted-foreground mb-4" aria-hidden="true">TRUST & SAFETY</p>
+          <p className="text-eyebrow text-muted-foreground mb-4" aria-hidden="true">WHY NOVAFIELD</p>
           <h2 id="trust-heading" className="text-display-lg text-ink mb-6">
             Built for reliable collaboration
           </h2>

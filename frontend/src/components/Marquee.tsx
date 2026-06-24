@@ -1,5 +1,3 @@
-"use client";
-
 const tools = [
   "OpenAI", "Midjourney", "Runway", "Claude", "Zapier",
   "Figma", "Canva", "ElevenLabs", "Sora", "DALL-E",

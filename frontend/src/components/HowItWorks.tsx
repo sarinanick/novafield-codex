@@ -41,8 +41,11 @@ export default function HowItWorks() {
             aria-label="User type"
           >
             <button
+              id="how-client-tab"
+              type="button"
               role="tab"
               aria-selected={activeTab === "client"}
+              aria-controls="how-client-panel"
               onClick={() => setActiveTab("client")}
               className={`px-6 py-2.5 rounded-pill text-body-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
                 activeTab === "client" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-ink"
@@ -51,8 +54,11 @@ export default function HowItWorks() {
               For clients
             </button>
             <button
+              id="how-freelancer-tab"
+              type="button"
               role="tab"
               aria-selected={activeTab === "freelancer"}
+              aria-controls="how-freelancer-panel"
               onClick={() => setActiveTab("freelancer")}
               className={`px-6 py-2.5 rounded-pill text-body-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
                 activeTab === "freelancer" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-ink"
@@ -64,9 +70,10 @@ export default function HowItWorks() {
         </div>
 
         <div
+          id={activeTab === "client" ? "how-client-panel" : "how-freelancer-panel"}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
           role="tabpanel"
-          aria-label={activeTab === "client" ? "Client workflow" : "Freelancer workflow"}
+          aria-labelledby={activeTab === "client" ? "how-client-tab" : "how-freelancer-tab"}
         >
           {steps.map((step, i) => (
             <div key={step.title} className="relative">

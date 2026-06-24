@@ -1,17 +1,15 @@
-"use client";
-
 import Link from "next/link";
 import { Film, Image, MessageSquare, Zap, Globe, PenTool, Palette, BarChart3 } from "lucide-react";
 
 const categories = [
-  { icon: Film, title: "AI Video & Ads", desc: "Video ads, product demos, social content, and cinematic scenes", href: "/marketplace?category=video" },
-  { icon: Image, title: "AI Image Generation", desc: "Product photos, brand visuals, illustrations, and concept art", href: "/marketplace?category=images" },
-  { icon: MessageSquare, title: "Chatbots & Agents", desc: "Custom chatbots, AI assistants, and conversational flows", href: "/marketplace?category=chatbots" },
-  { icon: Zap, title: "AI Automation", desc: "Workflow automation, integrations, and process optimization", href: "/marketplace?category=automation" },
-  { icon: Globe, title: "AI Web Apps", desc: "Landing pages, dashboards, and interactive prototypes", href: "/marketplace?category=webapps" },
-  { icon: PenTool, title: "AI Content & Copywriting", desc: "Blog posts, ad copy, product descriptions, and scripts", href: "/marketplace?category=content" },
-  { icon: Palette, title: "AI Design", desc: "Logos, brand identity, UI design, and visual systems", href: "/marketplace?category=design" },
-  { icon: BarChart3, title: "Data & Research", desc: "Data analysis, market research, and report generation", href: "/marketplace?category=data" },
+  { icon: Film, title: "AI Video & Ads", desc: "Video ads, product demos, social content, and cinematic scenes" },
+  { icon: Image, title: "AI Image Generation", desc: "Product photos, brand visuals, illustrations, and concept art" },
+  { icon: MessageSquare, title: "Chatbots & Agents", desc: "Custom chatbots, AI assistants, and conversational flows" },
+  { icon: Zap, title: "AI Automation", desc: "Workflow automation, integrations, and process optimization" },
+  { icon: Globe, title: "AI Web Apps", desc: "Landing pages, dashboards, and interactive prototypes" },
+  { icon: PenTool, title: "AI Content & Copywriting", desc: "Blog posts, ad copy, product descriptions, and scripts" },
+  { icon: Palette, title: "AI Design", desc: "Logos, brand identity, UI design, and visual systems" },
+  { icon: BarChart3, title: "Data & Research", desc: "Data analysis, market research, and report generation" },
 ];
 
 export default function Features() {
@@ -36,7 +34,7 @@ export default function Features() {
           {categories.map((cat) => (
             <Link
               key={cat.title}
-              href={cat.href}
+              href="/marketplace"
               className="group bg-surface-soft rounded-lg p-6 h-full hover:shadow-md transition-all hover:border-primary/30 border border-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               role="listitem"
             >

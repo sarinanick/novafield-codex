@@ -1,5 +1,3 @@
-"use client";
-
 import { ArrowRight, Star, Clock } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -113,17 +111,20 @@ export default function Hero() {
                 </span>
                 <span className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  Secure project workflow
+                  Clear project workflow
                 </span>
               </div>
             </div>
 
             <div className="hidden lg:block">
+              <p className="text-caption text-muted-foreground mb-4 text-center">Example AI services</p>
               <div className="grid grid-cols-2 gap-4">
                 {demoServices.map((service) => (
-                  <article
+                  <Link
                     key={service.title}
-                    className="bg-surface-soft border border-hairline rounded-lg p-5 hover:shadow-md transition-shadow"
+                    href="/marketplace"
+                    className="group bg-surface-soft border border-hairline rounded-lg p-5 hover:shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    aria-label={`View ${service.title} services`}
                   >
                     <div className="flex items-center gap-3 mb-3">
                       <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${service.gradient} flex items-center justify-center text-xs font-bold text-white`}>
@@ -153,7 +154,7 @@ export default function Hero() {
                         {service.delivery}
                       </span>
                     </div>
-                  </article>
+                  </Link>
                 ))}
               </div>
             </div>

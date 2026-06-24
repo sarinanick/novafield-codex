@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, MessageSquare, LayoutDashboard, LogOut, ChevronDown, Shield } from "lucide-react";
+import { Menu, X, MessageSquare, LayoutDashboard, LogOut, ChevronDown, Shield, ShoppingCart, Store, FilePlus } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { api } from "@/lib/api";
 import { useIsScrolled } from "@/hooks/use-scroll";
@@ -121,7 +121,10 @@ export default function Navbar() {
                             </div>
                             {[
                               { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+                              { href: "/orders", icon: ShoppingCart, label: "Orders" },
                               { href: "/messages", icon: MessageSquare, label: "Messages" },
+                              { href: "/marketplace", icon: Store, label: "Marketplace" },
+                              ...(user.role === "freelancer" ? [{ href: "/create-gig", icon: FilePlus, label: "Create Gig" }] : []),
                               { href: `/profile/${user.id}`, icon: MessageSquare, label: "Profile" },
                               ...(user.role === "admin" ? [{ href: "/admin", icon: Shield, label: "Admin" }] : []),
                             ].map(item => (
@@ -230,8 +233,12 @@ export default function Navbar() {
               {user ? (
                 <div className="mt-6 pt-6 border-t border-hairline space-y-1">
                   <Link href="/dashboard" className="block px-4 py-3 text-body-sm text-muted-foreground hover:bg-surface-soft rounded-lg transition-colors">Dashboard</Link>
-                  <Link href="/messages" className="block px-4 py-3 text-body-sm text-muted-foreground hover:bg-surface-soft rounded-lg transition-colors">Messages {unread > 0 && `(${unread})`}</Link>
                   <Link href="/orders" className="block px-4 py-3 text-body-sm text-muted-foreground hover:bg-surface-soft rounded-lg transition-colors">Orders</Link>
+                  <Link href="/messages" className="block px-4 py-3 text-body-sm text-muted-foreground hover:bg-surface-soft rounded-lg transition-colors">Messages {unread > 0 && `(${unread})`}</Link>
+                  <Link href="/marketplace" className="block px-4 py-3 text-body-sm text-muted-foreground hover:bg-surface-soft rounded-lg transition-colors">Marketplace</Link>
+                  {user.role === "freelancer" && (
+                    <Link href="/create-gig" className="block px-4 py-3 text-body-sm text-muted-foreground hover:bg-surface-soft rounded-lg transition-colors">Create Gig</Link>
+                  )}
                   <Link href={`/profile/${user.id}`} className="block px-4 py-3 text-body-sm text-muted-foreground hover:bg-surface-soft rounded-lg transition-colors">Profile</Link>
                   {user.role === "admin" && (
                     <Link href="/admin" className="block px-4 py-3 text-body-sm text-muted-foreground hover:bg-surface-soft rounded-lg transition-colors">Admin</Link>
