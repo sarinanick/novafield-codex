@@ -1,75 +1,100 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Upload, Wand2, Download, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { Search, Shield, CreditCard, Package, UserPlus, FileText, DollarSign, TrendingUp } from "lucide-react";
 
-const steps = [
-  {
-    number: "01",
-    icon: Upload,
-    title: "Describe Your Vision",
-    description: "Write a text prompt describing the video or image you want to create. Be as detailed or abstract as you like.",
-    color: "from-blue-500 to-cyan-500",
-  },
-  {
-    number: "02",
-    icon: Wand2,
-    title: "AI Generates It",
-    description: "Choose from 30+ AI models. Our platform handles rendering, style transfer, and output optimization automatically.",
-    color: "from-purple-500 to-pink-500",
-  },
-  {
-    number: "03",
-    icon: Download,
-    title: "Download & Use",
-    description: "Get your creation in up to 4K resolution. Use it commercially with no restrictions. Iterate until it's perfect.",
-    color: "from-green-500 to-emerald-500",
-  },
+const clientSteps = [
+  { icon: Search, title: "Browse AI services", description: "Explore categories and find freelancers with the skills you need." },
+  { icon: Shield, title: "Compare freelancers", description: "Review ratings, portfolios, delivery times, and pricing." },
+  { icon: CreditCard, title: "Start your order", description: "Start with clear pricing, scope, and delivery expectations." },
+  { icon: Package, title: "Receive completed work", description: "Track delivery and receive the completed project from your freelancer." },
+];
+
+const freelancerSteps = [
+  { icon: UserPlus, title: "Create your profile", description: "Set up your freelancer account and showcase your expertise." },
+  { icon: FileText, title: "Publish AI services", description: "Create gig listings with pricing, delivery times, and details." },
+  { icon: DollarSign, title: "Get orders", description: "Clients find your services and place orders directly." },
+  { icon: TrendingUp, title: "Deliver and grow", description: "Complete work, build reviews, and grow your business." },
 ];
 
 export default function HowItWorks() {
+  const [activeTab, setActiveTab] = useState<"client" | "freelancer">("client");
+  const steps = activeTab === "client" ? clientSteps : freelancerSteps;
+
   return (
-    <section className="bg-canvas py-section" aria-labelledby="how-it-works-heading">
+    <section id="how-it-works" className="bg-canvas py-section" aria-labelledby="how-it-works-heading">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <p className="text-eyebrow text-muted-foreground mb-4" aria-hidden="true">HOW IT WORKS</p>
           <h2 id="how-it-works-heading" className="text-display-lg text-ink mb-6">
-            From idea to cinema in 3 steps
+            Two ways to use NovaField
           </h2>
           <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
-            No technical skills needed. Just describe what you want, and our AI brings it to life.
+            Whether you need AI work done or want to sell your AI skills, we have you covered.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-          <div className="hidden md:block absolute top-16 left-1/6 right-1/6 h-px bg-hairline" aria-hidden="true" />
-          {steps.map((step, i) => (
-            <motion.div
-              key={step.number}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.2, duration: 0.6 }}
-              className="relative"
+        <div className="flex justify-center mb-12">
+          <div
+            className="inline-flex items-center gap-1 bg-surface-soft rounded-pill p-1"
+            role="tablist"
+            aria-label="User type"
+          >
+            <button
+              id="how-client-tab"
+              type="button"
+              role="tab"
+              aria-selected={activeTab === "client"}
+              aria-controls="how-client-panel"
+              onClick={() => setActiveTab("client")}
+              className={`px-6 py-2.5 rounded-pill text-body-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                activeTab === "client" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-ink"
+              }`}
             >
+              For clients
+            </button>
+            <button
+              id="how-freelancer-tab"
+              type="button"
+              role="tab"
+              aria-selected={activeTab === "freelancer"}
+              aria-controls="how-freelancer-panel"
+              onClick={() => setActiveTab("freelancer")}
+              className={`px-6 py-2.5 rounded-pill text-body-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                activeTab === "freelancer" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-ink"
+              }`}
+            >
+              For freelancers
+            </button>
+          </div>
+        </div>
+
+        <div
+          id={activeTab === "client" ? "how-client-panel" : "how-freelancer-panel"}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+          role="tabpanel"
+          aria-labelledby={activeTab === "client" ? "how-client-tab" : "how-freelancer-tab"}
+        >
+          {steps.map((step, i) => (
+            <div key={step.title} className="relative">
               <article className="text-center">
                 <div className="relative inline-block mb-6">
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-lg`}>
-                    <step.icon className="w-7 h-7 text-white" aria-hidden="true" />
+                  <div className="w-16 h-16 rounded-2xl bg-surface-soft border border-hairline flex items-center justify-center">
+                    <step.icon className="w-7 h-7 text-ink" aria-hidden="true" />
                   </div>
-                  <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-canvas border-2 border-hairline flex items-center justify-center text-caption font-bold text-ink">
-                    {step.number}
+                  <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-caption font-bold">
+                    {i + 1}
                   </span>
                 </div>
                 <h3 className="text-card-title text-ink mb-3">{step.title}</h3>
                 <p className="text-body-sm text-muted-foreground max-w-xs mx-auto">{step.description}</p>
               </article>
               {i < steps.length - 1 && (
-                <div className="hidden md:flex absolute top-16 -right-4 z-10">
-                  <ArrowRight className="w-6 h-6 text-hairline" aria-hidden="true" />
+                <div className="hidden lg:block absolute top-16 -right-4 z-10 text-hairline text-2xl" aria-hidden="true">
+                  →
                 </div>
               )}
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

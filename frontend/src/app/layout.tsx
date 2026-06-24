@@ -14,21 +14,21 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", weight: ["30
 const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", weight: ["400", "500"] });
 
 export const metadata: Metadata = {
-  title: "NovaField AI - Marketplace for AI Freelancers",
-  description: "Connect with expert AI freelancers. Video generation, image creation, chatbots, and more.",
-  keywords: ["AI", "freelancers", "video generation", "image creation", "marketplace"],
+  title: "NovaField AI - Hire AI Freelancers and Sell AI Services",
+  description: "Browse AI freelancers for video, image generation, chatbots, automations, design, content, and technical AI projects.",
+  keywords: ["AI freelancers", "AI marketplace", "hire AI experts", "AI services", "AI video", "AI automation", "AI chatbot"],
   authors: [{ name: "NovaField" }],
   openGraph: {
-    title: "NovaField AI - Marketplace for AI Freelancers",
-    description: "Connect with expert AI freelancers. Video generation, image creation, chatbots, and more.",
+    title: "NovaField AI - Hire AI Freelancers and Sell AI Services",
+    description: "Browse AI freelancers for video, image generation, chatbots, automations, design, content, and technical AI projects.",
     type: "website",
     locale: "en_US",
     siteName: "NovaField AI",
   },
   twitter: {
     card: "summary_large_image",
-    title: "NovaField AI - Marketplace for AI Freelancers",
-    description: "Connect with expert AI freelancers. Video generation, image creation, chatbots, and more.",
+    title: "NovaField AI - Hire AI Freelancers and Sell AI Services",
+    description: "Browse AI freelancers for video, image generation, chatbots, automations, design, content, and technical AI projects.",
   },
   robots: {
     index: true,
