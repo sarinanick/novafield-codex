@@ -18,7 +18,7 @@ export function SellerCard({ name, initials, gradient, specialty, rating, comple
   return (
     <Link
       href={href}
-      className="group block bg-surface-soft border border-hairline rounded-xl p-5 hover:shadow-md transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      className="group block bg-surface-soft border border-hairline rounded-lg p-5 hover:shadow-md transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       aria-label={`پروفایل ${name}`}
     >
       <div className="flex items-center gap-3 mb-4">

@@ -7,7 +7,6 @@ export interface ServiceCardProps {
   category: string;
   sellerName: string;
   sellerInitials: string;
-  sellerGradient?: string;
   rating: number;
   reviews: number;
   price: number;
@@ -21,7 +20,6 @@ export function ServiceCard({
   category,
   sellerName,
   sellerInitials,
-  sellerGradient = "from-ink to-ink/80",
   rating,
   reviews,
   price,
@@ -32,11 +30,11 @@ export function ServiceCard({
   return (
     <Link
       href={href}
-      className="group block bg-surface-soft border border-hairline rounded-xl p-5 hover:shadow-md transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      className="group block bg-surface-soft border border-hairline rounded-lg p-5 hover:shadow-md transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       aria-label={`${title} - ${sellerName}`}
     >
       <div className="flex items-center gap-3 mb-3">
-        <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${sellerGradient} flex items-center justify-center text-xs font-bold text-white shrink-0`}>
+        <div className="w-10 h-10 rounded-full bg-ink text-surface-soft flex items-center justify-center text-xs font-bold shrink-0">
           {sellerInitials}
         </div>
         <div className="min-w-0">

@@ -1,11 +1,9 @@
-"use client";
-
 import { forwardRef, type HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("rounded-xl border border-hairline bg-surface-soft transition-colors duration-150", className)} {...props} />
+    <div ref={ref} className={cn("rounded-lg border border-hairline bg-surface-soft transition-colors duration-150", className)} {...props} />
   )
 );
 Card.displayName = "Card";

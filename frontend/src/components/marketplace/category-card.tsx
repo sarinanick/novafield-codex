@@ -16,7 +16,7 @@ export function CategoryCard({ icon: Icon, title, description, serviceCount, hre
     <Link
       href={href}
       className={cn(
-        "group block bg-surface-soft border border-hairline rounded-xl p-5 hover:shadow-md transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        "group block bg-surface-soft border border-hairline rounded-lg p-5 hover:shadow-md transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         className
       )}
       aria-label={title}
