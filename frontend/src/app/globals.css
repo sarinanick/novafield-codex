@@ -47,31 +47,31 @@
 }
 
 :root {
-  --background: 0 0% 100%;
-  --foreground: 0 0% 0%;
+  --background: 36 33% 95%;
+  --foreground: 0 0% 7%;
   --card: 0 0% 100%;
-  --card-foreground: 0 0% 0%;
-  --primary: 0 0% 0%;
+  --card-foreground: 0 0% 7%;
+  --primary: 0 0% 7%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 0 0% 96.5%;
-  --secondary-foreground: 0 0% 9%;
-  --muted: 0 0% 96.5%;
-  --muted-foreground: 0 0% 45%;
-  --accent: 0 0% 96.5%;
-  --accent-foreground: 0 0% 9%;
+  --secondary: 36 20% 93%;
+  --secondary-foreground: 0 0% 7%;
+  --muted: 36 20% 93%;
+  --muted-foreground: 0 0% 38%;
+  --accent: 0 0% 93%;
+  --accent-foreground: 0 0% 7%;
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 90%;
-  --input: 0 0% 90%;
-  --ring: 0 0% 0%;
+  --border: 36 15% 82%;
+  --input: 36 15% 82%;
+  --ring: 0 0% 7%;
 
-  --ink: 0 0% 0%;
-  --canvas: 0 0% 100%;
-  --inverse-canvas: 0 0% 0%;
+  --ink: 0 0% 7%;
+  --canvas: 36 33% 95%;
+  --inverse-canvas: 0 0% 7%;
   --inverse-ink: 0 0% 100%;
-  --surface-soft: 0 0% 96.5%;
-  --hairline: 0 0% 90%;
-  --hairline-soft: 0 0% 94.5%;
+  --surface-soft: 0 0% 100%;
+  --hairline: 36 15% 82%;
+  --hairline-soft: 36 20% 90%;
 
   --block-lime: 82 52% 78%;
   --block-lilac: 260 59% 82%;
@@ -83,34 +83,40 @@
 
   --accent-magenta: 335 100% 62%;
   --semantic-success: 142 71% 45%;
+
+  --semantic-error: 0 84.2% 60.2%;
+  --semantic-warning: 38 92% 50%;
+  --semantic-info: 217 91% 60%;
+
+  --font-persian: "Vazirmatn", var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .dark {
-  --background: 0 0% 3.5%;
-  --foreground: 0 0% 98%;
-  --card: 0 0% 3.5%;
-  --card-foreground: 0 0% 98%;
-  --primary: 0 0% 100%;
-  --primary-foreground: 0 0% 0%;
-  --secondary: 0 0% 10%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 0 0% 10%;
-  --muted-foreground: 0 0% 65%;
-  --accent: 0 0% 10%;
-  --accent-foreground: 0 0% 98%;
+  --background: 0 0% 5%;
+  --foreground: 0 0% 95%;
+  --card: 0 0% 8%;
+  --card-foreground: 0 0% 95%;
+  --primary: 0 0% 95%;
+  --primary-foreground: 0 0% 5%;
+  --secondary: 0 0% 12%;
+  --secondary-foreground: 0 0% 95%;
+  --muted: 0 0% 12%;
+  --muted-foreground: 0 0% 60%;
+  --accent: 0 0% 12%;
+  --accent-foreground: 0 0% 95%;
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 10%;
-  --input: 0 0% 10%;
-  --ring: 0 0% 100%;
+  --border: 0 0% 15%;
+  --input: 0 0% 15%;
+  --ring: 0 0% 95%;
 
-  --ink: 0 0% 98%;
-  --canvas: 0 0% 3.5%;
+  --ink: 0 0% 95%;
+  --canvas: 0 0% 5%;
   --inverse-canvas: 0 0% 100%;
-  --inverse-ink: 0 0% 0%;
-  --surface-soft: 0 0% 10%;
-  --hairline: 0 0% 10%;
-  --hairline-soft: 0 0% 8%;
+  --inverse-ink: 0 0% 5%;
+  --surface-soft: 0 0% 8%;
+  --hairline: 0 0% 15%;
+  --hairline-soft: 0 0% 12%;
 
   --block-lime: 82 42% 18%;
   --block-lilac: 260 40% 20%;
@@ -122,6 +128,10 @@
 
   --accent-magenta: 335 90% 55%;
   --semantic-success: 142 60% 40%;
+
+  --semantic-error: 0 62.8% 30.6%;
+  --semantic-warning: 38 80% 40%;
+  --semantic-info: 217 80% 50%;
 }
 
 @layer base {
@@ -130,7 +140,7 @@
 }
 
 .font-display {
-  font-family: var(--font-inter), "SF Pro Display", system-ui, helvetica, sans-serif;
+  font-family: var(--font-vazirmatn), var(--font-inter), "SF Pro Display", system-ui, helvetica, sans-serif;
   font-feature-settings: "kern";
 }
 
@@ -139,6 +149,17 @@
   font-feature-settings: "kern";
   text-transform: uppercase;
   letter-spacing: 0.054em;
+}
+
+.font-persian {
+  font-family: var(--font-vazirmatn), var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-feature-settings: "kern";
+}
+
+[dir="rtl"] .font-display,
+[dir="rtl"] .font-body,
+[dir="rtl"] .font-persian {
+  font-family: var(--font-vazirmatn), var(--font-inter), system-ui, sans-serif;
 }
 
 .color-block-lime {

@@ -6,27 +6,30 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
+  "inline-flex items-center justify-center whitespace-nowrap text-body-sm font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm hover:shadow-md",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm hover:shadow-md",
-        outline: "border border-hairline bg-canvas text-ink hover:bg-surface-soft hover:border-hairline/80",
-        secondary: "bg-surface-soft text-ink hover:bg-hairline shadow-sm",
-        ghost: "hover:bg-surface-soft text-ink",
+        default: "bg-ink text-surface-soft hover:bg-ink/90 shadow-sm",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm",
+        outline: "border border-hairline bg-canvas text-ink hover:bg-surface-soft",
+        secondary: "bg-surface-soft text-ink border border-hairline hover:bg-hairline/50",
+        ghost: "text-ink hover:bg-surface-soft",
         link: "text-ink underline-offset-4 hover:underline",
-        glow: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30",
+        subtle: "bg-hairline/50 text-muted-foreground hover:bg-hairline hover:text-ink",
+        accent: "bg-accent-magenta text-white hover:bg-accent-magenta/90 shadow-sm",
       },
       size: {
-        default: "h-10 px-5 py-2 text-body-sm rounded-pill",
-        sm: "h-9 px-4 py-1.5 text-body-sm rounded-pill",
-        lg: "h-12 px-8 py-3 text-body rounded-pill",
-        xl: "h-14 px-10 py-4 text-body-lg rounded-pill",
-        icon: "h-10 w-10 rounded-full",
+        sm: "h-8 px-3 text-caption rounded-md",
+        md: "h-10 px-5 rounded-lg",
+        lg: "h-12 px-8 text-body rounded-lg",
+        xl: "h-14 px-10 text-body-lg rounded-lg",
+        icon: "h-10 w-10 rounded-lg",
+        "icon-sm": "h-8 w-8 rounded-md",
+        "icon-lg": "h-12 w-12 rounded-lg",
       },
     },
-    defaultVariants: { variant: "default", size: "default" },
+    defaultVariants: { variant: "default", size: "md" },
   }
 );
 
@@ -43,48 +46,18 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     if (asChild) {
       return (
-        <Slot
-          className={classes}
-          ref={ref}
-          aria-disabled={disabled || isLoading}
-          aria-busy={isLoading}
-          {...props}
-        >
+        <Slot className={classes} ref={ref} aria-disabled={disabled || isLoading} aria-busy={isLoading} {...props}>
           {children}
         </Slot>
       );
     }
 
     return (
-      <button
-        className={classes}
-        ref={ref}
-        disabled={disabled || isLoading}
-        aria-disabled={disabled || isLoading}
-        aria-busy={isLoading}
-        {...props}
-      >
+      <button className={classes} ref={ref} disabled={disabled || isLoading} aria-disabled={disabled || isLoading} aria-busy={isLoading} {...props}>
         {isLoading && (
-          <svg
-            className="animate-spin -ml-1 mr-2 h-4 w-4"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            />
+          <svg className="animate-spin -ms-1 me-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
           </svg>
         )}
         {children}

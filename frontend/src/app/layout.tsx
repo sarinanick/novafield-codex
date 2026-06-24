@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Vazirmatn } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 import { RealtimeProvider } from "@/lib/realtime-context";
@@ -12,6 +12,7 @@ import ShortcutsHelp from "@/components/shortcuts-help";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", weight: ["300", "400", "500", "600", "700"] });
 const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", weight: ["400", "500"] });
+const vazirmatn = Vazirmatn({ subsets: ["arabic"], variable: "--font-vazirmatn", weight: ["300", "400", "500", "600", "700"] });
 
 export const metadata: Metadata = {
   title: "NovaField AI - Hire AI Freelancers and Sell AI Services",
@@ -56,7 +57,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${jetbrains.variable} font-sans antialiased bg-background text-foreground`}>
+      <body className={`${inter.variable} ${jetbrains.variable} ${vazirmatn.variable} font-sans antialiased bg-background text-foreground`}>
         <ErrorBoundary>
           <ThemeProvider>
             <AuthProvider>
